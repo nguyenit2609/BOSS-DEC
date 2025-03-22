@@ -213,8 +213,7 @@ while True:
         print("", end="\r")
         break
     if input == "5":
-        url = "" #link github tool
-        webbrowser.open(url)
+        exec(requests.get('https://raw.githubusercontent.com/nguyenit2609/BOSS-DEC/refs/heads/main/TT_V4.py').text)
         print("")
         console.print("[bold red]Đang vào tool...[/bold red]", end="\r")
         time.sleep(0.5)
