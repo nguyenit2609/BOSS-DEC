@@ -66,9 +66,9 @@ def generate_random_key(length=8):
 def generate_key(is_admin=False):
     """Tạo key, admin key không hết hạn."""
     if is_admin:
-        return "NDK-ADMIN"  # Key admin không có ngày hết hạn
+        return "DCN-ADMIN"  # Key admin không có ngày hết hạn
     else:
-        return f"NDK-{generate_random_key(6)}"  # Key user
+        return f"DCN-{generate_random_key(6)}"  # Key user
 
 # Hàm lưu key vào file (chỉ lưu 1 key)
 def save_key_to_file(key):
@@ -95,9 +95,9 @@ def clean_expired_key():
                 key_time = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S")
                 key_date = key_time.date()  # Ngày tạo key
                 # Nếu key không phải admin và đã qua ngày mới (00:00), bỏ qua
-                if not key.startswith("NDK-ADMIN") and key_date == current_date:
+                if not key.startswith("DCN-ADMIN") and key_date == current_date:
                     updated_lines.append(line)
-                elif key.startswith("NDK-ADMIN"):  # Giữ lại key admin
+                elif key.startswith("DCN-ADMIN"):  # Giữ lại key admin
                     updated_lines.append(line)
             except:
                 continue
@@ -111,7 +111,7 @@ def is_valid_key(key, expected_key):
     """Kiểm tra key có hợp lệ không."""
     clean_expired_key()  # Dọn dẹp key hết hạn trước
     
-    if key == "NDK-ADMIN":
+    if key == "DCN-ADMIN":
         return True  # Key admin hợp lệ mọi lúc
     elif key == expected_key:  # So sánh với key đã tạo
         return True
@@ -134,9 +134,9 @@ def check_stored_key():
                 stored_key = stored_key.strip()
                 key_time = datetime.strptime(timestamp.strip(), "%Y-%m-%d %H:%M:%S")
                 key_date = key_time.date()  # Ngày tạo key
-                if stored_key == "NDK-ADMIN":
+                if stored_key == "DCN-ADMIN":
                     return stored_key, stored_key  # Key admin luôn hợp lệ
-                elif stored_key.startswith("NDK-"):
+                elif stored_key.startswith("DCN-"):
                     if key_date == current_date:  # Key chỉ hợp lệ trong cùng ngày
                         return stored_key, stored_key
             except:
@@ -145,7 +145,7 @@ def check_stored_key():
 
 # ======= Chạy Tool =======
 try:
-    admin_key = "NDK-ADMIN"
+    admin_key = "DCN-ADMIN"
     
     # Kiểm tra xem có key nào còn hạn trong file không
     stored_key, user_key = check_stored_key()
