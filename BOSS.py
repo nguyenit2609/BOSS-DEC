@@ -118,12 +118,12 @@ def is_valid_key(key, expected_key):
     return False
 
 # Hàm kiểm tra key đã lưu và còn hạn không
-def check_stored_key(expected_key):
-    """Kiểm tra xem có key nào còn hạn trong file không."""
+def check_stored_key():
+    """Kiểm tra xem có key nào còn hạn trong file không, trả về key nếu hợp lệ."""
     clean_expired_key()  # Dọn dẹp key hết hạn trước
     
     if not os.path.exists("key.txt"):
-        return None
+        return None, None
     
     current_time = datetime.now()
     current_date = current_time.date()  # Ngày hiện tại
@@ -135,30 +135,29 @@ def check_stored_key(expected_key):
                 key_time = datetime.strptime(timestamp.strip(), "%Y-%m-%d %H:%M:%S")
                 key_date = key_time.date()  # Ngày tạo key
                 if stored_key == "NDK-ADMIN":
-                    return stored_key  # Key admin luôn hợp lệ
-                elif stored_key == expected_key:
+                    return stored_key, stored_key  # Key admin luôn hợp lệ
+                elif stored_key.startswith("NDK-"):
                     if key_date == current_date:  # Key chỉ hợp lệ trong cùng ngày
-                        return stored_key
+                        return stored_key, stored_key
             except:
                 continue
-    return None
+    return None, None
 
 # ======= Chạy Tool =======
 try:
     admin_key = "NDK-ADMIN"
-    user_key = generate_key(is_admin=False)
-
-    # Tạo link YeuMoney chứa key
-    link_can_rut = f"https://www.webkey.x10.mx/?ma={user_key}"  # Thay bằng URL mới của bạn
-    short_link = get_shortened_link_yeumoney(link_can_rut)
-    console.print(f"[bold red][bold yellow]LINK[/bold yellow] [bold white]|[/bold white][bold magenta]VƯỢT LINK ĐỂ LẤY KEY[/bold magenta][/bold red][bold green]: {short_link}[/bold green]")    
-    # Kiểm tra xem có key nào còn hạn không
-    stored_valid_key = check_stored_key(user_key)
-    if stored_valid_key:
-        console.print(f"[bold green]Key còn hạn: {stored_valid_key}. Đang xác nhận key...[/bold green]")
-        time.sleep(3)  # Chờ 3 giây trước khi vào tool
-        print("\033[F\033[K" * 4, end="")
-    else:
+    
+    # Kiểm tra xem có key nào còn hạn trong file không
+    stored_key, user_key = check_stored_key()
+    
+    # Nếu không có key còn hạn, tạo key mới và yêu cầu người dùng vượt link
+    if not stored_key:
+        user_key = generate_key(is_admin=False)
+        # Tạo link YeuMoney chứa key
+        link_can_rut = f"https://www.webkey.x10.mx/?ma={user_key}"  # Thay bằng URL mới của bạn
+        short_link = get_shortened_link_yeumoney(link_can_rut)
+        console.print(f"[bold red][bold yellow]LINK[/bold yellow] [bold white]|[/bold white][bold magenta]VƯỢT LINK ĐỂ LẤY KEY[/bold magenta][/bold red][bold green]: {short_link}[/bold green]")
+        
         while True:
             nhap_key = console.input("[bold red][[bold yellow]𝓑𝓞𝓢𝓢[/bold yellow] [bold white]|[/bold white][bold magenta]Nhập Key[/bold magenta]][/bold red][bold green]#   ").strip()
             
@@ -173,6 +172,14 @@ try:
                 print("\n❌ Key không hợp lệ. Vui lòng vượt link để lấy key!", end="\r")
                 time.sleep(2)
                 print("\033[F\033[K" * 2, end="")  # Xóa 2 dòng vừa in
+    else:
+        # Nếu có key còn hạn, hiển thị link YeuMoney nhưng không yêu cầu nhập lại
+        link_can_rut = f"https://www.webkey.x10.mx/?ma={stored_key}"
+        short_link = get_shortened_link_yeumoney(link_can_rut)
+        console.print(f"[bold red][bold yellow]LINK[/bold yellow] [bold white]|[/bold white][bold magenta]VƯỢT LINK ĐỂ LẤY KEY[/bold magenta][/bold red][bold green]: {short_link}[/bold green]")
+        console.print(f"[bold green]Key còn hạn: {stored_key}. Đang xác nhận key...[/bold green]")
+        time.sleep(3)  # Chờ 3 giây trước khi vào tool
+        print("\033[F\033[K" * 4, end="")
 
 except Exception as e:
     console.print(f"[bold red]ErrolKey: {e}[/bold red]")
