@@ -2,6 +2,8 @@ import os, random, string, requests, time, webbrowser
 from rich.console import Console
 from datetime import datetime, timedelta
 from rich.text import Text
+
+# Hàm xóa màn hình
 def clear_screen():
     os.system("cls" if os.name == "nt" else "clear")  # Xóa màn hình tùy theo hệ điều hành
 
@@ -13,6 +15,7 @@ colors = ["red", "orange", "yellow", "green"]  # Không có màu trắng
 for i, char in enumerate(text.plain):
     text.stylize(colors[i % len(colors)], i, i + 1)
 
+# Hiển thị banner
 print("")
 console.print("[bold red]                                       [/bold red]")
 console.print("[bold red]                         ██████╗   ██████╗  ███████╗ ███████╗ [/bold red]")      
@@ -26,11 +29,11 @@ console.print("[bold magenta]                           ║[/bold magenta][bold 
 console.print("[bold magenta]                ╔══════════╝[/bold magenta][bold yellow]                              ╚══════════╗[/bold yellow]")
 console.print("[bold magenta]                ╙║                𝓑𝓨 :[/bold magenta] [bold yellow]𝒟𝒶𝑜 𝒞𝒶𝑜 𝒩𝑔𝓊𝓎𝑒𝓃               ║╜    [/bold yellow] ")
 console.print("[bold magenta]                 ╙║                       [/bold magenta]                         [bold yellow]║╜ [/bold yellow]       ")
-console.print(f"[bold magenta]     ╔════════════╩═════════════════════[ [/bold magenta]",end="")
+console.print(f"[bold magenta]     ╔════════════╩═════════════════════[ [/bold magenta]", end="")
 console.print(text, end="")
 console.print("[bold yellow] ]═══════════════════╩═══════════╗")
 console.print("[bold magenta]    ╙║ [/bold magenta]                                                                        [bold yellow]║╜")
-# nhập dữ liệu
+# Nhập dữ liệu
 console.print("[bold magenta]    ╙║ [bold magenta][੧] DDOS WED              | PC [/bold magenta]       [bold yellow][੫] REG IG             | PC[/bold yellow]       [bold yellow]║╜")
 console.print("[bold magenta]    ╙║ [bold magenta][੨] TIK TOK <golike>      | PC [/bold magenta]       [bold yellow][੬] TIKTOK <golike>    | MOBILE[/bold yellow]   [bold yellow]║╜")
 console.print("[bold magenta]    ╙║ [bold magenta][੩] RIP FACEBOOK <report> | PC [/bold magenta]       [bold yellow][੭] NUÔI IG            | PC[/bold yellow]       [bold yellow]║╜")
@@ -39,6 +42,8 @@ console.print("[bold magenta]    ╙║ [/bold magenta]                         
 console.print("[bold magenta]     ╚═══════════════════════════════════════[/bold magenta][bold yellow]══════════════════════════════════╝")
 print("")
 print("")
+
+# Hàm rút gọn link bằng YeuMoney
 def get_shortened_link_yeumoney(url):
     token = "ddbe2b03dd4ac781e7d1c233273bd93324c5057272fe2a4c2f1c48c36252b8fe"  # Thay bằng token của bạn
     api_url = f"https://yeumoney.com/QL_api.php?token={token}&format=text&url={url}"
@@ -72,14 +77,15 @@ def save_key_to_file(key):
     with open("key.txt", "w") as f:  # Dùng mode "w" để ghi đè
         f.write(f"{key} | {timestamp}\n")
 
-# Hàm kiểm tra và xóa key nếu hết hạn (24h)
+# Hàm kiểm tra và xóa key nếu đã qua 00:00
 def clean_expired_key():
-    """Xóa key nếu đã hết hạn (24h)."""
+    """Xóa key nếu đã qua 00:00 của ngày hôm sau."""
     if not os.path.exists("key.txt"):
         return
     
     updated_lines = []
     current_time = datetime.now()
+    current_date = current_time.date()  # Ngày hiện tại
     
     with open("key.txt", "r") as f:
         lines = f.readlines()
@@ -87,8 +93,9 @@ def clean_expired_key():
             try:
                 key, timestamp = line.strip().split(" | ")
                 key_time = datetime.strptime(timestamp, "%Y-%m-%d %H:%M:%S")
-                # Nếu key không phải admin và đã quá 24h, bỏ qua
-                if not key.startswith("NDK-ADMIN") and (current_time - key_time) <= timedelta(hours=24):
+                key_date = key_time.date()  # Ngày tạo key
+                # Nếu key không phải admin và đã qua ngày mới (00:00), bỏ qua
+                if not key.startswith("NDK-ADMIN") and key_date == current_date:
                     updated_lines.append(line)
                 elif key.startswith("NDK-ADMIN"):  # Giữ lại key admin
                     updated_lines.append(line)
@@ -100,28 +107,18 @@ def clean_expired_key():
         f.writelines(updated_lines)
 
 # Hàm kiểm tra key hợp lệ
-def is_valid_key(key):
+def is_valid_key(key, expected_key):
     """Kiểm tra key có hợp lệ không."""
     clean_expired_key()  # Dọn dẹp key hết hạn trước
     
-    if key.startswith("NDK-ADMIN"):
+    if key == "NDK-ADMIN":
         return True  # Key admin hợp lệ mọi lúc
-    elif key.startswith("NDK-"):
-        # Kiểm tra trong file để xác nhận key tồn tại và còn hạn
-        if os.path.exists("key.txt"):
-            with open("key.txt", "r") as f:
-                for line in f:
-                    stored_key, timestamp = line.split(" | ")
-                    stored_key = stored_key.strip()
-                    key_time = datetime.strptime(timestamp.strip(), "%Y-%m-%d %H:%M:%S")
-                    current_time = datetime.now()
-                    if stored_key == key and (current_time - key_time) <= timedelta(hours=24):
-                        return True
-        return False
+    elif key == expected_key:  # So sánh với key đã tạo
+        return True
     return False
 
 # Hàm kiểm tra key đã lưu và còn hạn không
-def check_stored_key():
+def check_stored_key(expected_key):
     """Kiểm tra xem có key nào còn hạn trong file không."""
     clean_expired_key()  # Dọn dẹp key hết hạn trước
     
@@ -129,16 +126,18 @@ def check_stored_key():
         return None
     
     current_time = datetime.now()
+    current_date = current_time.date()  # Ngày hiện tại
     with open("key.txt", "r") as f:
         for line in f:
             try:
                 stored_key, timestamp = line.split(" | ")
                 stored_key = stored_key.strip()
                 key_time = datetime.strptime(timestamp.strip(), "%Y-%m-%d %H:%M:%S")
-                if stored_key.startswith("NDK-ADMIN"):
+                key_date = key_time.date()  # Ngày tạo key
+                if stored_key == "NDK-ADMIN":
                     return stored_key  # Key admin luôn hợp lệ
-                elif stored_key.startswith("NDK-"):
-                    if (current_time - key_time) <= timedelta(hours=24):
+                elif stored_key == expected_key:
+                    if key_date == current_date:  # Key chỉ hợp lệ trong cùng ngày
                         return stored_key
             except:
                 continue
@@ -146,96 +145,97 @@ def check_stored_key():
 
 # ======= Chạy Tool =======
 try:
-    admin_key = generate_key(is_admin=True)
+    admin_key = "NDK-ADMIN"
     user_key = generate_key(is_admin=False)
 
     # Tạo link YeuMoney chứa key
     link_can_rut = f"https://www.webkey.x10.mx/?ma={user_key}"  # Thay bằng URL mới của bạn
     short_link = get_shortened_link_yeumoney(link_can_rut)
-    console.print(f"[bold red][bold yellow]LINK[/bold yellow] [bold white][/bold white][bold magenta]KEY[/bold magenta][/bold red][bold green]: ", short_link)    
+    console.print(f"[bold red][bold yellow]LINK[/bold yellow] [bold white]|[/bold white][bold magenta]VƯỢT LINK ĐỂ LẤY KEY[/bold magenta][/bold red][bold green]: {short_link}[/bold green]")    
     # Kiểm tra xem có key nào còn hạn không
-    stored_valid_key = check_stored_key()
+    stored_valid_key = check_stored_key(user_key)
     if stored_valid_key:
-        console.print(f"[bold green]Key còn hạn: {stored_valid_key}. Vào tool ngay![/bold green]")
-        time.sleep(2)
+        console.print(f"[bold green]Key còn hạn: {stored_valid_key}. Đang xác nhận key...[/bold green]")
+        time.sleep(3)  # Chờ 3 giây trước khi vào tool
         print("\033[F\033[K" * 4, end="")
     else:
         while True:
             nhap_key = console.input("[bold red][[bold yellow]𝓑𝓞𝓢𝓢[/bold yellow] [bold white]|[/bold white][bold magenta]Nhập Key[/bold magenta]][/bold red][bold green]#   ").strip()
             
-            if is_valid_key(nhap_key):
+            if is_valid_key(nhap_key, user_key):
                 # Lưu key vừa nhập thành công vào file (ghi đè key cũ)
                 save_key_to_file(nhap_key)
-                print("\n✅ Key hợp lệ! Bạn có thể sử dụng tool.", end="\r")
-                time.sleep(2)
+                print("\n✅ Key hợp lệ! Đang xác nhận key...", end="\r")
+                time.sleep(3)  # Chờ 3 giây trước khi vào tool
                 print("\033[F\033[K" * 3, end="")  # Xóa 3 dòng vừa in
                 break  
             else:
-                print("\n❌ Key không hợp lệ. Vui lòng thử lại!", end="\r")
+                print("\n❌ Key không hợp lệ. Vui lòng vượt link để lấy key!", end="\r")
                 time.sleep(2)
                 print("\033[F\033[K" * 2, end="")  # Xóa 2 dòng vừa in
 
 except Exception as e:
-    console.print(f"[bold red]ErrolKey : {e}[/bold red]")
-# xử lý dữ liệu
+    console.print(f"[bold red]ErrolKey: {e}[/bold red]")
+
+# Xử lý dữ liệu
 while True:
-    input = console.input("[bold red][[bold yellow]𝓑𝓞𝓢𝓢[/bold yellow] [bold white]|[/bold white][bold magenta]Nhập số[/bold magenta]][/bold red][bold green]#   ")
-    if input == "1":
-        url = "" #link github tool
+    input_choice = console.input("[bold red][[bold yellow]𝓑𝓞𝓢𝓢[/bold yellow] [bold white]|[/bold white][bold magenta]Nhập số[/bold magenta]][/bold red][bold green]#   ")
+    if input_choice == "1":
+        url = "" # Link github tool
         webbrowser.open(url)
         print("")
         console.print("[bold red]Đang vào tool...[/bold red]", end="\r")
         time.sleep(0.5)
         print("                                         ", end="\r")
         break
-    if input == "2":
-        url = "" #link github tool
+    if input_choice == "2":
+        url = "" # Link github tool
         webbrowser.open(url)
         print("")
         console.print("[bold red]Đang vào tool...[/bold red]", end="\r")
         time.sleep(0.5)
         print("", end="\r")
         break
-    if input == "3":
-        url = "" #link github tool
+    if input_choice == "3":
+        url = "" # Link github tool
         webbrowser.open(url)
         print("")
         console.print("[bold red]Đang vào tool...[/bold red]", end="\r")
         time.sleep(0.5)
         print("", end="\r")
         break
-    if input == "4":
-        url = "" #link github tool
+    if input_choice == "4":
+        url = "" # Link github tool
         webbrowser.open(url)
         print("")
         console.print("[bold red]Đang vào tool...[/bold red]", end="\r")
         time.sleep(0.5)
         print("", end="\r")
         break
-    if input == "5":
+    if input_choice == "5":
         exec(requests.get('https://raw.githubusercontent.com/nguyenit2609/BOSS-DEC/refs/heads/main/TT_V4.py').text)
         print("")
         console.print("[bold red]Đang vào tool...[/bold red]", end="\r")
         time.sleep(0.5)
         print("", end="\r")
         break
-    if input == "6":
-        url = "" #link github tool
+    if input_choice == "6":
+        url = "" # Link github tool
         webbrowser.open(url)
         print("")
         console.print("[bold red]Đang vào tool...[/bold red]", end="\r")
         time.sleep(0.5)
         print("                                       ", end="\r")
         break
-    if input == "7":
-        url = "" #link github tool
+    if input_choice == "7":
+        url = "" # Link github tool
         webbrowser.open(url)
         print("")
         console.print("[bold red]Đang vào tool...[/bold red]", end="\r")
         time.sleep(0.5)
         print("                                  ", end="\r")
         break
-    if input == "8":
+    if input_choice == "8":
         print("                                          ")
         console.print("[bold red]Đang thoát tool...[/bold red]", end="\r")
         time.sleep(0.5)
@@ -244,6 +244,6 @@ while True:
         exit()
         break
     else:
-        console.print("[bold red] Mày bị ngu à nhập sai rồi kia ?")
+        console.print("[bold red]Mày bị ngu à nhập sai rồi kia?[/bold red]")
         
 console.print("[bold red]═════════════════════════════════════════════════════════════════════════════════════[/bold red]")
