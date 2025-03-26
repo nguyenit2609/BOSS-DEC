@@ -33,17 +33,20 @@ from datetime import datetime, timedelta
 from random_user_agent.user_agent import UserAgent
 from random_user_agent.params import SoftwareName, OperatingSystem
 import random, os
-# Hàm kiểm tra & cài đặt thư viện
 def install_if_missing(package, module_name=None):
+    """Tự động cài đặt package nếu chưa có."""
     if module_name is None:
         module_name = package
     try:
         __import__(module_name)
     except ImportError:
-        print(f"Đang cài đặt {package} ...")
-        os.system(f"{sys.executable} -m pip install {package}")
+        print(f"🔧 Đang cài đặt {package} ...")
+        try:
+            subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+        except Exception as e:
+            print(f"❌ Lỗi khi cài đặt {package}: {e}")
 
-# Danh sách thư viện cần thiết
+# Danh sách thư viện cần kiểm tra
 libraries = {
     "requests": "requests",
     "selenium": "selenium",
@@ -56,7 +59,7 @@ libraries = {
     "dnspython": "dns",
 }
 
-# Kiểm tra và cài đặt thư viện
+# Kiểm tra và cài đặt tất cả thư viện
 for package, module in libraries.items():
     install_if_missing(package, module)
 
