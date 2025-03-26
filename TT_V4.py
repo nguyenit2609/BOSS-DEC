@@ -33,6 +33,35 @@ from datetime import datetime, timedelta
 from random_user_agent.user_agent import UserAgent
 from random_user_agent.params import SoftwareName, OperatingSystem
 import random, os
+# Hàm kiểm tra & cài đặt thư viện
+def install_if_missing(package, module_name=None):
+    if module_name is None:
+        module_name = package
+    try:
+        __import__(module_name)
+    except ImportError:
+        print(f"Đang cài đặt {package} ...")
+        os.system(f"{sys.executable} -m pip install {package}")
+
+# Danh sách thư viện cần thiết
+libraries = {
+    "requests": "requests",
+    "selenium": "selenium",
+    "art": "art",
+    "colorama": "colorama",
+    "pystyle": "pystyle",
+    "tabulate": "tabulate",
+    "rich": "rich",
+    "random_user_agent": "random_user_agent",
+    "dnspython": "dns",
+}
+
+# Kiểm tra và cài đặt thư viện
+for package, module in libraries.items():
+    install_if_missing(package, module)
+
+print("✅ Tất cả thư viện đã được kiểm tra và cài đặt xong!")
+os.system("cls" if os.name == "nt" else "clear")
 
 os.system('cls' if os.name == 'nt' else 'clear')
 console = Console()
@@ -42,9 +71,9 @@ console.print("[bold magenta]═════════════════
 resolver = dns.resolver.Resolver(configure=False)
 resolver.nameservers = ['8.8.8.8']
 
+
 org_socket = socket.getaddrinfo
 os.system('cls' if os.name == 'nt' else 'clear')
-
 
 def google_socket(host, port, family=0, type=0, proto=0, flags=0):
     try:
@@ -676,3 +705,4 @@ if checkurl1['status']== 200 :
 else:
     print(Fore.RED+'DANG NHAP THAT BAI')
     os.remove('user.txt')
+
