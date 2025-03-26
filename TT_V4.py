@@ -9,62 +9,59 @@ lam = "\033[1;36m"
 purple = "\033[35m"
 hong = "\033[1;95m"
 
-from rich.prompt import Prompt
+import os
+import sys
+import subprocess
+
+# Danh sách thư viện cần kiểm tra
+libraries = [
+    "requests",
+    "tabulate",
+    "art",
+    "colorama",
+    "random_user_agent",
+    "dnspython",
+    "pystyle",
+    "rich"
+]
+
+# Hàm kiểm tra và cài đặt thư viện
+def install_libraries():
+    missing_libraries = []
+    for lib in libraries:
+        try:
+            __import__(lib)
+        except ImportError:
+            missing_libraries.append(lib)
+
+    if missing_libraries:
+        print(f"🔧 Đang cài đặt các thư viện: {', '.join(missing_libraries)} ...")
+        subprocess.check_call([sys.executable, "-m", "pip", "install", *missing_libraries])
+        print("✅ Cài đặt hoàn tất!")
+
+# Chạy kiểm tra và cài đặt nếu cần
+install_libraries()
+
+# Import lại sau khi cài đặt xong
 import requests
 import time
-from rich.console import Console
 import threading
 from art import *
-from colorama import Fore
+from colorama import Fore, Style, init
 from time import sleep
 import json
-import string
 import random
 import dns.resolver
 import socket
 from tabulate import tabulate
-from pystyle import Write
-from tabulate import tabulate
-from pystyle import Colorate, Colors
-from datetime import datetime
-from colorama import Fore, Style, init
-import sys
+from pystyle import Write, Colorate, Colors
 from datetime import datetime, timedelta
+from rich.console import Console
 from random_user_agent.user_agent import UserAgent
 from random_user_agent.params import SoftwareName, OperatingSystem
-import random, os
-def install_if_missing(package, module_name=None):
-    """Tự động cài đặt package nếu chưa có."""
-    if module_name is None:
-        module_name = package
-    try:
-        __import__(module_name)
-    except ImportError:
-        print(f"🔧 Đang cài đặt {package} ...")
-        try:
-            subprocess.check_call([sys.executable, "-m", "pip", "install", package])
-        except Exception as e:
-            print(f"❌ Lỗi khi cài đặt {package}: {e}")
 
-# Danh sách thư viện cần kiểm tra
-libraries = {
-    "requests": "requests",
-    "selenium": "selenium",
-    "art": "art",
-    "colorama": "colorama",
-    "pystyle": "pystyle",
-    "tabulate": "tabulate",
-    "rich": "rich",
-    "random_user_agent": "random_user_agent",
-    "dnspython": "dns",
-}
+print("🚀 Tất cả thư viện đã sẵn sàng!")
 
-# Kiểm tra và cài đặt tất cả thư viện
-for package, module in libraries.items():
-    install_if_missing(package, module)
-
-print("✅ Tất cả thư viện đã được kiểm tra và cài đặt xong!")
-os.system("cls" if os.name == "nt" else "clear")
 
 os.system('cls' if os.name == 'nt' else 'clear')
 console = Console()
