@@ -46,6 +46,7 @@ install_libraries()
 import requests
 import time
 import threading
+from rich.prompt import Prompt
 from art import *
 from colorama import Fore, Style, init
 from time import sleep
