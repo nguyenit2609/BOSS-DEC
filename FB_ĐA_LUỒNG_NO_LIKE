@@ -133,7 +133,7 @@ def create_driver(profile_path, headless=False):
     options = uc.ChromeOptions()
     options.add_argument(f"--user-data-dir={os.path.abspath(profile_path)}")
     options.add_argument("--disable-blink-features=AutomationControlled")
-    options.add_argument("--force-device-scale-factor=0.2")
+    options.add_argument("--force-device-scale-factor=0.4")
     options.add_argument("--no-first-run --no-service-autorun --password-store=basic")
     options.add_argument("--no-sandbox")
     options.add_argument("--disable-dev-shm-usage")
@@ -301,7 +301,7 @@ def lam_job(profile_path, index=0):
         delay_laplai(1)
         lam_job_facebook_like(driver, index)
 # Hàm chạy đa luồng với delay giữa các luồng
-def chay_da_luong(profile_paths, delay=3):
+def chay_da_luong(profile_paths, delay=10):
     threads = []
     for index, profile_path in enumerate(profile_paths):
         time.sleep(delay * index)
@@ -329,6 +329,7 @@ def tat_chrome_hieu_ung():
 def ui():
     while True:
         tat_chrome_hieu_ung()
+        delay_anti(15)
         os.system('cls')
         
         print(f"""
@@ -360,3 +361,9 @@ def ui():
 # Thực thi chương trình với 3 profile
 if __name__ == "__main__":
     ui()
+
+
+
+
+
+
