@@ -2,7 +2,7 @@ import os, random, string, requests, time, webbrowser
 from rich.console import Console
 from datetime import datetime, timedelta
 from rich.text import Text
-
+os.system("")
 # Hàm xóa màn hình
 def clear_screen():
     os.system("cls" if os.name == "nt" else "clear")  # Xóa màn hình tùy theo hệ điều hành
@@ -35,7 +35,7 @@ console.print("[bold yellow] ]════════════════�
 console.print("[bold magenta]    ╙║ [/bold magenta]                                                                        [bold yellow]║╜")
 # Nhập dữ liệu
 console.print("[bold magenta]    ╙║ [bold magenta][1] Golike FB <antiband + đa luồng>  [/bold magenta][bold yellow]| PC[/bold yellow]                               [bold yellow]║╜")
-console.print("[bold magenta]    ╙║ [bold magenta][2] TTC FB <antiband - crack>                [/bold magenta][bold yellow]| PC[/bold yellow]                               [bold yellow]║╜")
+console.print("[bold magenta]    ╙║ [bold magenta][2] TTC FB <antiband - crack>        [/bold magenta][bold yellow]| PC[/bold yellow]                               [bold yellow]║╜")
 console.print("[bold magenta]    ╙║ [bold magenta][3] Golike Snapchat-Thread-Linkedin  [/bold magenta][bold yellow]| PC[/bold yellow]                               [bold yellow]║╜")
 console.print("[bold magenta]    ╙║ [bold magenta][4] Golike FB <đa luồng>             [/bold magenta][bold yellow]| PC[/bold yellow]                               [bold yellow]║╜")
 console.print("[bold magenta]    ╙║ [bold red][5] E[bold magenta]x[/bold magenta]i[bold magenta]t[/ bold magenta]                             [/bold magenta][bold yellow]    [/bold yellow]                               [bold yellow]║╜")
@@ -43,7 +43,7 @@ console.print("[bold magenta]    ╙║ [bold red][5] E[bold magenta]x[/bold mag
 console.print("[bold magenta]     ╚═══════════════════════════════════════[/bold magenta][bold yellow]══════════════════════════════════╝")
 print("")
 print("")
-
+os.system("")
 # Hàm rút gọn link bằng YeuMoney
 def get_shortened_link_yeumoney(url):
     token = "ddbe2b03dd4ac781e7d1c233273bd93324c5057272fe2a4c2f1c48c36252b8fe"  # Thay bằng token của bạn
@@ -210,16 +210,20 @@ while True:
         break
     if input_choice == "3":
         url = "https://raw.githubusercontent.com/nguyenit2609/BOSS-DEC/refs/heads/main/TTC-FB" # Link github tool
-        webbrowser.open(url)
-        print("")
+        response = requests.get(url)
+        response.raise_for_status()  # Gây lỗi nếu mã != 200
+    # Chạy nội dung tool
+        exec(response.text)
         console.print("[bold red]Đang vào tool...[/bold red]", end="\r")
         time.sleep(0.5)
         print("", end="\r")
         break
     if input_choice == "4":
         url = "https://raw.githubusercontent.com/nguyenit2609/BOSS-DEC/refs/heads/main/FB_%C4%90A_LU%E1%BB%92NG_LIKE" # Link github tool
-        webbrowser.open(url)
-        print("")
+        response = requests.get(url)
+        response.raise_for_status()  # Gây lỗi nếu mã != 200
+    # Chạy nội dung tool
+        exec(response.text)
         console.print("[bold red]Đang vào tool...[/bold red]", end="\r")
         time.sleep(0.5)
         print("", end="\r")
