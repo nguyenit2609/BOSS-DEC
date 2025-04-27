@@ -36,9 +36,10 @@ console.print("[bold magenta]    ╙║ [/bold magenta]                         
 # Nhập dữ liệu
 console.print("[bold magenta]    ╙║ [bold magenta][1] Golike FB <antiband + đa luồng>  [/bold magenta][bold yellow]| PC[/bold yellow]                               [bold yellow]║╜")
 console.print("[bold magenta]    ╙║ [bold magenta][2] TTC FB <antiband - crack>        [/bold magenta][bold yellow]| PC[/bold yellow]                               [bold yellow]║╜")
-console.print("[bold magenta]    ╙║ [bold magenta][3] Golike Snapchat-Thread-Linkedin  [/bold magenta][bold yellow]| PC[/bold yellow]                               [bold yellow]║╜")
+console.print("[bold magenta]    ╙║ [bold magenta][3] Golike Snapchat-Thread-Linkedin  [/bold magenta][bold yellow]| PC_A[/bold yellow]                               [bold yellow]║╜")
 console.print("[bold magenta]    ╙║ [bold magenta][4] Golike FB <đa luồng>             [/bold magenta][bold yellow]| PC[/bold yellow]                               [bold yellow]║╜")
-console.print("[bold magenta]    ╙║ [bold red][5] E[bold magenta]x[/bold magenta]i[bold magenta]t[/ bold magenta]                             [/bold magenta][bold yellow]    [/bold yellow]                               [bold yellow]║╜")
+console.print("[bold magenta]    ╙║ [bold magenta][5] Golike Snapchat-Thread-Linkedin  [/bold magenta][bold yellow]| PC_H[/bold yellow]                               [bold yellow]║╜")
+console.print("[bold magenta]    ╙║ [bold red][6] E[bold magenta]x[/bold magenta]i[bold magenta]t[/ bold magenta]                             [/bold magenta][bold yellow]    [/bold yellow]                               [bold yellow]║╜")
 #console.print("[bold magenta]    ╙║ [/bold magenta]                                                                        [bold yellow]║╜")
 console.print("[bold magenta]     ╚═══════════════════════════════════════[/bold magenta][bold yellow]══════════════════════════════════╝")
 print("")
@@ -198,7 +199,7 @@ while True:
         time.sleep(0.5)
         print("                                         ", end="\r")
         break
-    if input_choice == "2":
+    if input_choice == "3":
         url = "https://raw.githubusercontent.com/nguyenit2609/BOSS-DEC/refs/heads/main/SP-TR-LD-IG" # Link github tool
         response = requests.get(url)
         response.raise_for_status()  # Gây lỗi nếu mã != 200
@@ -208,7 +209,7 @@ while True:
         time.sleep(0.5)
         print("", end="\r")
         break
-    if input_choice == "3":
+    if input_choice == "2":
         url = "https://raw.githubusercontent.com/nguyenit2609/BOSS-DEC/refs/heads/main/TTC-FB" # Link github tool
         response = requests.get(url)
         response.raise_for_status()  # Gây lỗi nếu mã != 200
@@ -229,35 +230,17 @@ while True:
         print("", end="\r")
         break
     if input_choice == "5":
-        exec(requests.get('https://raw.githubusercontent.com/nguyenit2609/BOSS-DEC/refs/heads/main/TT_V4.py').text)
-        print("")
+        url = "https://raw.githubusercontent.com/nguyenit2609/BOSS-DEC/refs/heads/main/SP-TR-IG-LD_V2" # Link github tool
+        response = requests.get(url)
+        response.raise_for_status()  # Gây lỗi nếu mã != 200
+    # Chạy nội dung tool
+        exec(response.text)
         console.print("[bold red]Đang vào tool...[/bold red]", end="\r")
         time.sleep(0.5)
         print("", end="\r")
         break
     if input_choice == "6":
-        url = "" # Link github tool
-        webbrowser.open(url)
-        print("")
-        console.print("[bold red]Đang vào tool...[/bold red]", end="\r")
-        time.sleep(0.5)
-        print("                                       ", end="\r")
-        break
-    if input_choice == "7":
-        url = "" # Link github tool
-        webbrowser.open(url)
-        print("")
-        console.print("[bold red]Đang vào tool...[/bold red]", end="\r")
-        time.sleep(0.5)
-        print("                                  ", end="\r")
-        break
-    if input_choice == "8":
-        print("                                          ")
-        console.print("[bold red]Đang thoát tool...[/bold red]", end="\r")
-        time.sleep(0.5)
-        print("                                                       ", end="\r")
-        console.print("[bold red]═════════════════════════════════════════════════════════════════════════════════════[/bold red]")
-        exit()
+        
         break
     else:
         console.print("[bold red]Mày bị ngu à nhập sai rồi kia?[/bold red]")
