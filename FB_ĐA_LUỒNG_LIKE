@@ -17,7 +17,9 @@ from selenium.webdriver.support import expected_conditions as EC
 from datetime import datetime
 from selenium.webdriver.common.action_chains import ActionChains
 from colorama import Fore, Style
+from rich.console import Console
 os.system("")
+console = Console()
 frames = ['|', '/', '-', '\\']  
 
 # Hàm delay chung với tham số cho hành động và thời gian
@@ -26,7 +28,7 @@ def delay_action(second, action_text, is_error=False):
         icon = frames[i % len(frames)]  # Chọn icon theo bước
         color = RED if is_error else CYAN if i % 2 == 0 else BLUE
         bracket_color = YELLOW if i % 2 == 0 else MAGENTA
-        print(f"{color}{icon} {action_text} {bracket_color}[{i//10}.{i%10}s]{RESET}", end="\r")
+        print(f"{color}{icon} {action_text} {bracket_color}[{i//10}.{i%10}s] {RESET}", end="\r")
         time.sleep(0.1)
     print(" " * 60, end="\r")   
 def delay(second):
@@ -37,6 +39,8 @@ def delay_die(second):
     delay_action(second, "Job die => Đang bỏ qua", is_error=True)
 def delay_anti(second):
     delay_action(second, "Đang chạy antiband")
+def delay_xoa(second):
+    delay_action(second, "Đang Chuẩn Bị Tài Nguyên Vào Tool") 
 # Tạo profile
 def tao_profile_moi():
     index = 1
@@ -282,33 +286,23 @@ def chay_da_luong(profile_paths, delay=5):
     for t in threads:
         t.join()
 def tat_chrome_hieu_ung():
-    os.system("")
-    frames = ['|', '/', '-', '\\']  
-    try:
-        print("\033[1;33mĐang tắt trình duyệt Chrome", end="", flush=True)  
-        for i in range(20): 
-            print(f"\r\033[1;33mĐang tắt trình duyệt Chrome {frames[i % len(frames)]}", end="", flush=True)
-            time.sleep(0.2)
-        os.system('taskkill /f /im chrome.exe >nul 2>&1')
-        time.sleep(0.5)
-        print("\n\0033[1;32mĐã tắt Chrome thành công.") 
-    except Exception as e:
-        print("\n\033[1;31m❌ Lỗi khi tắt Chrome:", e)  
+    os.system('taskkill /f /im chrome.exe >nul 2>&1')
  #Menu UI
 def ui():
     while True:
         tat_chrome_hieu_ung()
-        delay(15)
+        delay_xoa(15)
         os.system('cls')
-        
-        print(f"""
-{CYAN}===== MENU ====={RESET}
-[1]  Thêm tài khoản
-[2]  Kiểm tra đăng nhập
-[3]  Làm nhiệm vụ (đồng thời)
-[X]  Thoát
-        """)
-        lua_chon = input("[W] Nhập lựa chọn: ").strip()
+        console.print("[bold magenta]                      Welcome to[/bold magenta][bold yellow] the 𝓑𝓞𝓢𝓢 [/bold yellow]")
+        console.print("[bold magenta]                 ╚═╦════════════[/bold magenta][bold yellow]══════════╦═╝")
+        console.print("[bold magenta]═════════════════════[ Golike Fa[/bold magenta][bold yellow]cebook ]═══════════════════════[/bold yellow]")
+        print("")
+        console.print("[bold magenta][[bold yellow]1[/bold yellow]]  Thêm tài khoản[/bold magenta]")
+        console.print("[bold magenta][[bold yellow]2[/bold yellow]]  Kiểm tra đăng nhập[/bold magenta]")
+        console.print("[bold magenta][[bold yellow]3[/bold yellow]]  Làm nhiệm vụ (đồng thời)[/bold magenta]")
+        console.print("[bold magenta][[bold yellow]X[/bold yellow]]  Thoát[/bold magenta]")
+        print("")
+        lua_chon = console.input("  [[bold yellow]𝓑𝓞𝓢𝓢[/bold yellow]|[bold magenta]Nhập sô[/bold magenta]][bold green]#   ")
         profiles = load_profiles_from_file()  # Đọc lại danh sách profile từ file
 
         if lua_chon == "1":
@@ -320,7 +314,9 @@ def ui():
             kiem_tra_profile(profiles)
 
         elif lua_chon == "3":
+            
             try:
+        
                 chay_da_luong(profiles)
             except Exception as e:
                 print(e)
@@ -330,6 +326,7 @@ def ui():
 # Thực thi chương trình với 3 profile
 if __name__ == "__main__":
     ui()
+
 
 
 
