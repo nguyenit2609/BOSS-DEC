@@ -1,13 +1,69 @@
-import os, random, string, requests, time, webbrowser
-from rich.console import Console
-from datetime import datetime, timedelta
-from rich.text import Text
+import os
+import sys
+import subprocess
+
+# Danh sách thư viện cần kiểm tra
+libraries = [
+    "requests",
+    "tabulate",
+    "art",
+    "colorama",
+    "random_user_agent",
+    "dnspython",
+    "pystyle",
+    "rich"
+]
+
+# Hàm kiểm tra và cài đặt thư viện
+def install_libraries():
+    missing_libraries = []
+    for lib in libraries:
+        try:
+            __import__(lib)
+        except ImportError:
+            missing_libraries.append(lib)
+
+    if missing_libraries:
+        print(f"🔧 Đang cài đặt các thư viện: {', '.join(missing_libraries)} ...")
+        subprocess.check_call([sys.executable, "-m", "pip", "install", *missing_libraries])
+        print("✅ Cài đặt hoàn tất!")
+        os.system("cls" if os.name == "nt" else "clear") 
+        
+
+# Chạy kiểm tra và cài đặt nếu cần
+try:
+    import os, random, string, requests, time, webbrowser
+    from rich.console import Console
+    from datetime import datetime, timedelta
+    from rich.text import Text
+    from random_user_agent.user_agent import UserAgent
+    from random_user_agent.params import SoftwareName, OperatingSystem
+    import dns.resolver
+    import socket
+except:
+    install_libraries()
 os.system("")
 # Hàm xóa màn hình
-def clear_screen():
+def clear():
     os.system("cls" if os.name == "nt" else "clear")  # Xóa màn hình tùy theo hệ điều hành
+resolver = dns.resolver.Resolver(configure=False)
+resolver.nameservers = ['8.8.8.8']
+org_socket = socket.getaddrinfo
+os.system('cls' if os.name == 'nt' else 'clear')
 
-clear_screen()
+def google_socket(host, port, family=0, type=0, proto=0, flags=0):
+    try:
+        info = resolver.resolve(host)
+        ip_address = info[0].to_text()
+        return org_socket(ip_address, port, family, type, proto, flags)
+    except:
+        return org_socket(host, port, family, type, proto, flags)
+
+socket.getaddrinfo = google_socket
+software_names = [SoftwareName.CHROME.value]
+operating_systems = [OperatingSystem.WINDOWS.value, OperatingSystem.LINUX.value]   
+user_agent_rotator = UserAgent(software_names=software_names, operating_systems=operating_systems, limit=100)
+clear()
 console = Console()
 text = Text("MENU", style="bold")
 colors = ["red", "orange", "yellow", "green"]  # Không có màu trắng
@@ -35,11 +91,7 @@ console.print("[bold yellow] ]════════════════�
 console.print("[bold magenta]    ╙║ [/bold magenta]                                                                        [bold yellow]║╜")
 # Nhập dữ liệu
 console.print("[bold magenta]    ╙║ [bold magenta][1] Golike FB <antiband + đa luồng>  [/bold magenta][bold yellow]| PC[/bold yellow]                               [bold yellow]║╜")
-console.print("[bold magenta]    ╙║ [bold magenta][2] TTC FB <antiband - crack>        [/bold magenta][bold yellow]| PC[/bold yellow]                               [bold yellow]║╜")
-console.print("[bold magenta]    ╙║ [bold magenta][3] Golike Snapchat-Thread-Linkedin  [/bold magenta][bold yellow]| PC_A[/bold yellow]                               [bold yellow]║╜")
-console.print("[bold magenta]    ╙║ [bold magenta][4] Golike FB <đa luồng>             [/bold magenta][bold yellow]| PC[/bold yellow]                               [bold yellow]║╜")
-console.print("[bold magenta]    ╙║ [bold magenta][5] Golike Snapchat-Thread-Linkedin  [/bold magenta][bold yellow]| PC_H[/bold yellow]                               [bold yellow]║╜")
-console.print("[bold magenta]    ╙║ [bold red][6] E[bold magenta]x[/bold magenta]i[bold magenta]t[/ bold magenta]                             [/bold magenta][bold yellow]    [/bold yellow]                               [bold yellow]║╜")
+console.print("[bold magenta]    ╙║ [bold red][2] E[bold magenta]x[/bold magenta]i[bold magenta]t[/ bold magenta]                             [/bold magenta][bold yellow]    [/bold yellow]                               [bold yellow]║╜")
 #console.print("[bold magenta]    ╙║ [/bold magenta]                                                                        [bold yellow]║╜")
 console.print("[bold magenta]     ╚═══════════════════════════════════════[/bold magenta][bold yellow]══════════════════════════════════╝")
 print("")
@@ -188,59 +240,32 @@ except Exception as e:
 
 # Xử lý dữ liệu
 while True:
-    input_choice = console.input("[bold red][[bold yellow]𝓑𝓞𝓢𝓢[/bold yellow] [bold white]|[/bold white][bold magenta]Nhập số[/bold magenta]][/bold red][bold green]#   ")
+    print("")
+    input_choice = console.input(" [bold red][[bold yellow]𝓑𝓞𝓢𝓢[/bold yellow] [bold white]|[/bold white][bold magenta]Nhập số[/bold magenta]][/bold red][bold green]#   ")
     if input_choice == "1":
-        url = "https://raw.githubusercontent.com/nguyenit2609/BOSS-DEC/refs/heads/main/FB_%C4%90A_LU%E1%BB%92NG_NO_LIKE" # Link github tool
-        response = requests.get(url)
-        response.raise_for_status()  # Gây lỗi nếu mã != 200
-    # Chạy nội dung tool
-        exec(response.text)
-        console.print("[bold red]Đang vào tool...[/bold red]", end="\r")
-        time.sleep(0.5)
-        print("                                         ", end="\r")
-        break
-    if input_choice == "3":
-        url = "https://raw.githubusercontent.com/nguyenit2609/BOSS-DEC/refs/heads/main/SP-TR-LD-IG" # Link github tool
-        response = requests.get(url)
-        response.raise_for_status()  # Gây lỗi nếu mã != 200
-    # Chạy nội dung tool
-        exec(response.text)
-        console.print("[bold red]Đang vào tool...[/bold red]", end="\r")
-        time.sleep(0.5)
-        print("", end="\r")
-        break
-    if input_choice == "2":
-        url = "https://raw.githubusercontent.com/nguyenit2609/BOSS-DEC/refs/heads/main/TTC-FB" # Link github tool
-        response = requests.get(url)
-        response.raise_for_status()  # Gây lỗi nếu mã != 200
-    # Chạy nội dung tool
-        exec(response.text)
-        console.print("[bold red]Đang vào tool...[/bold red]", end="\r")
-        time.sleep(0.5)
-        print("", end="\r")
-        break
-    if input_choice == "4":
-        url = "https://raw.githubusercontent.com/nguyenit2609/BOSS-DEC/refs/heads/main/FB_%C4%90A_LU%E1%BB%92NG_LIKE" # Link github tool
-        response = requests.get(url)
-        response.raise_for_status()  # Gây lỗi nếu mã != 200
-    # Chạy nội dung tool
-        exec(response.text)
-        console.print("[bold red]Đang vào tool...[/bold red]", end="\r")
-        time.sleep(0.5)
-        print("", end="\r")
-        break
-    if input_choice == "5":
-        url = "https://raw.githubusercontent.com/nguyenit2609/BOSS-DEC/refs/heads/main/SP-TR-IG-LD_V2" # Link github tool
-        response = requests.get(url)
-        response.raise_for_status()  # Gây lỗi nếu mã != 200
-    # Chạy nội dung tool
-        exec(response.text)
-        console.print("[bold red]Đang vào tool...[/bold red]", end="\r")
-        time.sleep(0.5)
-        print("", end="\r")
-        break
-    if input_choice == "6":
         
+        url = "https://raw.githubusercontent.com/nguyenit2609/BOSS-DEC/refs/heads/main/FB_%C4%90A_LU%E1%BB%92NG_LIKE"
+        try:
+            # Gửi yêu cầu GET đến URL
+            response = requests.get(url)
+            
+            # Kiểm tra nếu mã phản hồi không phải 200
+            response.raise_for_status()  # Gây lỗi nếu mã phản hồi không phải 200
+
+            # Nếu thành công, chạy nội dung tool
+            exec(response.text)
+            console.print("[bold red]Đang vào tool...[/bold red]", end="\r")
+            time.sleep(0.5)
+            print("                                         ", end="\r")
+
+        except requests.exceptions.RequestException as e:
+            # Xử lý các lỗi yêu cầu (mạng, DNS, v.v.)
+            console.print(f"[bold red]Lỗi khi tải URL: {e}[/bold red]")
+
+        except Exception as e:
+            # Xử lý các lỗi khác
+            console.print(f"[bold red]Đã xảy ra lỗi: {e}[/bold red]")
+    if input_choice == "2":
         break
     else:
         console.print("[bold red]Mày bị ngu à nhập sai rồi kia?[/bold red]")
