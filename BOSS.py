@@ -13,6 +13,28 @@ libraries = [
     "pystyle",
     "rich"
 ]
+import sys, os, time, subprocess, importlib
+
+# Danh sách thư viện cần dùng
+required_packages = {
+    "selenium": "selenium",
+    "undetected_chromedriver": "undetected-chromedriver",
+    "colorama": "colorama",
+    "rich": "rich"
+}
+
+def install_if_missing(module_name, pip_name):
+    try:
+        importlib.import_module(module_name)
+        print(f"✅ Đã cài: {module_name}")
+    except ImportError:
+        print(f"📦 Chưa có {module_name} → đang cài...")
+        subprocess.check_call([sys.executable, "-m", "pip", "install", "-U", pip_name])
+
+for module, pip_name in required_packages.items():
+    install_if_missing(module, pip_name)
+time.sleep(2)
+os.system("cls")
 
 # Hàm kiểm tra và cài đặt thư viện
 def install_libraries():
