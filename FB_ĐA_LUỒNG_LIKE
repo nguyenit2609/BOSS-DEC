@@ -6,28 +6,6 @@ BLUE = '\033[94m'
 RED = '\033[91m'
 RESET = '\033[0m'
 
-import sys, os, time, subprocess, importlib
-
-# Danh sách thư viện cần dùng
-required_packages = {
-    "selenium": "selenium",
-    "undetected_chromedriver": "undetected-chromedriver",
-    "colorama": "colorama",
-    "rich": "rich"
-}
-
-def install_if_missing(module_name, pip_name):
-    try:
-        importlib.import_module(module_name)
-        print(f"✅ Đã cài: {module_name}")
-    except ImportError:
-        print(f"📦 Chưa có {module_name} → đang cài...")
-        subprocess.check_call([sys.executable, "-m", "pip", "install", "-U", pip_name])
-
-for module, pip_name in required_packages.items():
-    install_if_missing(module, pip_name)
-time.sleep(2)
-os.system("cls")
 import threading
 import time
 import os, random
@@ -277,7 +255,7 @@ def lam_job_facebook_like(driver, index=0):
     try:
         driver.get("https://app.golike.net/jobs/facebook?load_job=false")
         driver.execute_script("document.body.style.zoom = '0.50';")
-        delay_laplai(2)
+        delay_laplai(5)
         # Kiểm tra xu
         kt = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[1]/div[2]/div/div[1]/div[2]/span/div[1]/div/div/div/div/div[1]/h6/span/span')
         text = kt.text.strip()
@@ -287,7 +265,7 @@ def lam_job_facebook_like(driver, index=0):
         delay(2)
         # chuyển snag 
         laylink = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[1]/div[2]/div[2]/div[1]/div/div/a[1]/div[3]/i')
-        delay(1)
+        delay(2)
         laylink.click()
         WebDriverWait(driver, 60).until(EC.number_of_windows_to_be(2))
         handles = driver.window_handles
@@ -332,20 +310,17 @@ def lam_job_facebook_like(driver, index=0):
                 # hoàn thành job golike
                 
                 driver.find_element(By.XPATH, '/html/body/div[1]/div/div[1]/div[2]/div[2]/div[2]/div').click()
-                delay(1)
+                delay(2)
                 WebDriverWait(driver, 30).until(
                     EC.element_to_be_clickable((By.CSS_SELECTOR, 'button.swal2-confirm.swal2-styled'))
                 ).click()
         # Xu li lai job loi + in ra
-                delay_anti(5)
-
-                if driver.current_url.startswith ("https://app.golike.net/jobs/facebook?load_job=false"):
+                delay_anti(3)
+                if driver.current_url.startswith( "https://app.golike.net/jobs/facebook?load_job=false"):
                     biendem += 1
                     tongxu += xu
                     print(f" [Luồng {index}] {CYAN}| {biendem} |  FACEBOOK  | {RED} Ẩn ID {RESET} |{GREEN} Hoàn Thành {RESET}| {YELLOW}+{xu}{RESET} | {MAGENTA}Tổng xu: {tongxu}{RESET} | {BLUE}Time: {datetime.now().strftime('%H:%M:%S')}{RESET} | ")
                 else:
-                    handles = driver.window_handles
-                    driver.switch_to.window(handles[0])
                     delay_die(2)
                     element = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[1]/div[2]/div[3]/div[1]')
                     delay_die(1)
@@ -402,7 +377,7 @@ def lam_job(profile_path, index=0):
         delay_laplai(1)
         lam_job_facebook_like(driver, index)
 # Hàm chạy đa luồng với delay giữa các luồng
-def chay_da_luong(profile_paths, delay=3):
+def chay_da_luong(profile_paths, delay=20):
     threads = []
     for index, profile_path in enumerate(profile_paths):
         time.sleep(delay )
@@ -456,12 +431,6 @@ def ui():
 # Thực thi chương trình với 3 profile
 if __name__ == "__main__":
     ui()
-
-
-
-
-
-
 
 
 
