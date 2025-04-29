@@ -6,6 +6,28 @@ BLUE = '\033[94m'
 RED = '\033[91m'
 RESET = '\033[0m'
 
+import sys, os, time, subprocess, importlib
+
+# Danh sách thư viện cần dùng
+required_packages = {
+    "selenium": "selenium",
+    "undetected_chromedriver": "undetected-chromedriver",
+    "colorama": "colorama",
+    "rich": "rich"
+}
+
+def install_if_missing(module_name, pip_name):
+    try:
+        importlib.import_module(module_name)
+        print(f"✅ Đã cài: {module_name}")
+    except ImportError:
+        print(f"📦 Chưa có {module_name} → đang cài...")
+        subprocess.check_call([sys.executable, "-m", "pip", "install", "-U", pip_name])
+
+for module, pip_name in required_packages.items():
+    install_if_missing(module, pip_name)
+time.sleep(2)
+os.system("cls")
 import threading
 import time
 import os, random
@@ -83,7 +105,6 @@ def save_profiles_to_file(profiles):
 
 def kiem_tra_profile(profiles):
     os.system("cls")
-    giaodien()
     print("")
     console.print("[bold magenta]                      Welcome to[/bold magenta][bold yellow] the 𝓑𝓞𝓢𝓢 [/bold yellow]")
     console.print("[bold magenta]                 ╚═╦════════════[/bold magenta][bold yellow]══════════╦═╝")
@@ -110,9 +131,10 @@ def kiem_tra_profile(profiles):
             driver = kt_driver(profile_path)
             driver.set_window_size(500,700)
             # Kiểm tra GoLike
-            driver.get("https://app.golike.net/home")
+            driver.get("https://app.golike.net/login")
+            driver.execute_script("document.body.style.zoom = '0.80';")
             delay_kt(2)
-            if "golike.net" in driver.current_url:
+            if driver.current_url == "https://app.golike.net/home":
                 print(f"{Fore.GREEN}[✅] Đã đăng nhập GoLike: {profile_path}{Style.RESET_ALL}")
             else:
                 print(f"{Fore.YELLOW}[...] Chưa đăng nhập GoLike: {profile_path}{Style.RESET_ALL}")
@@ -122,12 +144,15 @@ def kiem_tra_profile(profiles):
             # Kiểm tra Facebook
             all_windows = driver.window_handles
             driver.switch_to.window(all_windows[1])
-            driver.get("https://www.facebook.com/friends")
-            delay_kt(2)
-            if "facebook.com" in driver.current_url:
-                print(f"{Fore.GREEN}[✅] Đã đăng nhập Facebook: {profile_path}{Style.RESET_ALL}")
-            else:
-                input("Vui lòng đăng nhập Facebook, sau đó bấm Enter...")
+            while True:
+                driver.get("https://www.facebook.com/friends/")
+                delay_kt(2)
+                if driver.current_url.startswith("https://www.facebook.com/friends/"):
+                    print(f"{Fore.GREEN}[✅] Đã đăng nhập Facebook: {profile_path}{Style.RESET_ALL}")
+                    break
+                else:
+                    input("Vui lòng đăng nhập Facebook, sau đó bấm Enter...")
+                    continue
             delay_kt(5)
             driver.get("https://www.facebook.com/")
             delay_kt(2)
@@ -141,7 +166,6 @@ def kiem_tra_profile(profiles):
             driver.execute_script("window.scrollBy(0, -1000);")
             kt_fb = driver.find_element(By.XPATH, '//div[@id="screen-root"]/div/div[2]/div[13]/div/div[2]/div[4]/div/div/span')
             kt_fb_ten = kt_fb.text.strip()
-            print(kt_fb_ten)
             all_windows = driver.window_handles
             driver.switch_to.window(all_windows[0])
             driver.get("https://app.golike.net/jobs/facebook?load_job=false")
@@ -164,81 +188,61 @@ def kiem_tra_profile(profiles):
     except ValueError:
         print(f"{RED}⚠️ Vui lòng nhập số hợp lệ!{RESET}")
         
-User_Agent=random.choice([
-"android|Mozilla/5.0 (Linux; U; Android 7.1; GT-I9100 Build/KTU84P) AppleWebKit/603.12 (KHTML, like Gecko) Chrome/50.0.3755.367 Mobile Safari/600.8",
-"android|Mozilla/5.0 (Linux; Android 5.0; SM-N910V Build/LRX22C) AppleWebKit/601.33 (KHTML, like Gecko) Chrome/54.0.1548.302 Mobile Safari/537.0",
-"android|Mozilla/5.0 (Linux; U; Android 7.1; Pixel C Build/NRD90M) AppleWebKit/600.2 (KHTML, like Gecko) Chrome/53.0.2480.357 Mobile Safari/600.7",
-"android|Mozilla/5.0 (Linux; U; Android 7.0; Nexus 7 Build/NME91E) AppleWebKit/537.24 (KHTML, like Gecko) Chrome/55.0.1165.180 Mobile Safari/535.4",
-"android|Mozilla/5.0 (Android; Android 4.4.4; IQ4502 Quad Build/KOT49H) AppleWebKit/603.22 (KHTML, like Gecko) Chrome/55.0.3246.371 Mobile Safari/535.0",
-"android|Mozilla/5.0 (Linux; U; Android 5.0.1; SAMSUNG SM-G925FQ Build/KOT49H) AppleWebKit/536.8 (KHTML, like Gecko) Chrome/49.0.2349.273 Mobile Safari/533.8",
-"android|Mozilla/5.0 (Android; Android 5.1.1; SM-G935S Build/LMY47X) AppleWebKit/601.8 (KHTML, like Gecko) Chrome/51.0.1541.177 Mobile Safari/603.6",
-"android|Mozilla/5.0 (Android; Android 7.1; Nexus 6 Build/NME91E) AppleWebKit/533.39 (KHTML, like Gecko) Chrome/52.0.3581.331 Mobile Safari/602.0",
-"android|Mozilla/5.0 (Android; Android 7.1; Pixel C Build/NME91E) AppleWebKit/536.42 (KHTML, like Gecko) Chrome/47.0.2862.396 Mobile Safari/534.0",
-"android|Mozilla/5.0 (Linux; Android 5.0.1; LG-D725 Build/LRX22G) AppleWebKit/603.18 (KHTML, like Gecko) Chrome/54.0.3919.385 Mobile Safari/601.9",
-"android|Mozilla/5.0 (Linux; U; Android 5.0.2; Lenovo A7000-a Build/LRX21M;) AppleWebKit/600.8 (KHTML, like Gecko) Chrome/47.0.1683.316 Mobile Safari/534.4",
-"android|Mozilla/5.0 (Linux; Android 5.1.1; SAMSUNG SM-G925M Build/LRX22G) AppleWebKit/533.12 (KHTML, like Gecko) Chrome/48.0.3195.222 Mobile Safari/534.1",
-"android|Mozilla/5.0 (Linux; U; Android 5.1.1; MOTOROLA XT1021 Build/LXB22) AppleWebKit/602.21 (KHTML, like Gecko) Chrome/51.0.3324.323 Mobile Safari/536.2",
-"android|Mozilla/5.0 (Linux; Android 4.4; LG-D350 Build/KOT49I) AppleWebKit/601.4 (KHTML, like Gecko) Chrome/50.0.1490.201 Mobile Safari/602.6",
-"android|Mozilla/5.0 (Linux; Android 7.0; Xperia Build/NDE63X) AppleWebKit/600.18 (KHTML, like Gecko) Chrome/48.0.3885.393 Mobile Safari/602.7",
-"android|Mozilla/5.0 (Android; Android 7.1; Nexus 9X Build/NPD90G) AppleWebKit/536.38 (KHTML, like Gecko) Chrome/52.0.2441.242 Mobile Safari/601.0",
-"android|Mozilla/5.0 (Linux; U; Android 7.1; GT-I9600 Build/KTU84P) AppleWebKit/602.14 (KHTML, like Gecko) Chrome/53.0.2318.108 Mobile Safari/534.8",
-"android|Mozilla/5.0 (Android; Android 5.1.1; MOTO XT1570 MOTO X STYLE Build/LMY47Z) AppleWebKit/534.48 (KHTML, like Gecko) Chrome/55.0.1855.292 Mobile Safari/602.5",
-"android|Mozilla/5.0 (Linux; U; Android 5.0.1; HTC Butterfly S 919d Build/LRX22G) AppleWebKit/534.18 (KHTML, like Gecko) Chrome/50.0.1695.312 Mobile Safari/535.3",
-"android|Mozilla/5.0 (Android; Android 4.4; MOTOROLA MOTOG Build/KVT49L) AppleWebKit/533.8 (KHTML, like Gecko) Chrome/55.0.3923.147 Mobile Safari/600.9",
-"android|Mozilla/5.0 (Linux; U; Android 6.0; HTC One801e dual sim Build/MRA58K) AppleWebKit/536.39 (KHTML, like Gecko) Chrome/47.0.3811.339 Mobile Safari/601.7",
-"android|Mozilla/5.0 (Linux; Android 6.0.1; HTC OneS Build/MRA58K) AppleWebKit/600.47 (KHTML, like Gecko) Chrome/51.0.1432.312 Mobile Safari/535.4",
-"android|Mozilla/5.0 (Linux; U; Android 4.4.1; LG-H220 Build/KOT49H) AppleWebKit/600.42 (KHTML, like Gecko) Chrome/48.0.2208.322 Mobile Safari/601.2",
-"android|Mozilla/5.0 (Linux; U; Android 7.0; Nexus 6 Build/NME91E) AppleWebKit/534.11 (KHTML, like Gecko) Chrome/54.0.3774.223 Mobile Safari/600.6",
-"android|Mozilla/5.0 (Linux; U; Android 7.0; GT-I9800 Build/KTU84P) AppleWebKit/601.41 (KHTML, like Gecko) Chrome/50.0.1638.368 Mobile Safari/536.0",
-"android|Mozilla/5.0 (Linux; Android 6.0; SM-D925S Build/MDB08I) AppleWebKit/533.20 (KHTML, like Gecko) Chrome/47.0.2004.347 Mobile Safari/537.9",
-"android|Mozilla/5.0 (Linux; U; Android 7.1.1; LG-H900 Build/NRD90C) AppleWebKit/536.25 (KHTML, like Gecko) Chrome/48.0.2443.138 Mobile Safari/601.6",
-"android|Mozilla/5.0 (Linux; Android 6.0; HTC One_M8 Build/MRA58K) AppleWebKit/537.13 (KHTML, like Gecko) Chrome/47.0.3998.201 Mobile Safari/603.7",
-"android|Mozilla/5.0 (Linux; U; Android 5.0; Nokia 1100 wifi Build/GRK39F) AppleWebKit/533.11 (KHTML, like Gecko) Chrome/54.0.1361.195 Mobile Safari/602.4",
-"android|Mozilla/5.0 (Linux; U; Android 4.4.4; SGH-I337 Build/KOT49H) AppleWebKit/536.23 (KHTML, like Gecko) Chrome/51.0.1317.102 Mobile Safari/603.0",
-"android|Mozilla/5.0 (Linux; Android 5.0; SM-N915G Build/LRX22C) AppleWebKit/533.5 (KHTML, like Gecko) Chrome/50.0.2825.177 Mobile Safari/602.4",
-"android|Mozilla/5.0 (Android; Android 5.1; SM-G9350FG Build/LMY47X) AppleWebKit/533.11 (KHTML, like Gecko) Chrome/53.0.2999.116 Mobile Safari/601.3",
-"android|Mozilla/5.0 (Android; Android 5.1; SAMSUNG SM-G9350M Build/LMY47X) AppleWebKit/534.37 (KHTML, like Gecko) Chrome/51.0.3632.269 Mobile Safari/533.2",
-"android|Mozilla/5.0 (Linux; U; Android 5.1; Nexus 8 Build/LRX22C) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/47.0.3223.257 Mobile Safari/536.7",
-"android|Mozilla/5.0 (Linux; U; Android 4.4.1; XT1045 Build/[KXB20.9|KXC21.5]) AppleWebKit/601.38 (KHTML, like Gecko) Chrome/48.0.2780.100 Mobile Safari/535.6",
-"android|Mozilla/5.0 (Linux; U; Android 7.1.1; Xperia Build/NDE63X) AppleWebKit/601.40 (KHTML, like Gecko) Chrome/48.0.1946.380 Mobile Safari/537.1",
-"android|Mozilla/5.0 (Android; Android 5.1.1; MOTO X PLAY XT1562 Build/LPC23) AppleWebKit/533.10 (KHTML, like Gecko) Chrome/54.0.3715.270 Mobile Safari/537.6",
-"android|Mozilla/5.0 (Android; Android 5.1.1; MOTOROLA MOTO E XT1021 Build/LPK23) AppleWebKit/537.2 (KHTML, like Gecko) Chrome/48.0.1929.112 Mobile Safari/603.2",
-"android|Mozilla/5.0 (Linux; Android 7.1.1; GT-I9700 Build/KTU84P) AppleWebKit/535.35 (KHTML, like Gecko) Chrome/48.0.3232.317 Mobile Safari/537.8",
-"android|Mozilla/5.0 (Linux; Android 5.0.2; LG-D710 Build/LRX22G) AppleWebKit/535.36 (KHTML, like Gecko) Chrome/48.0.1427.177 Mobile Safari/535.9",
-"android|Mozilla/5.0 (Android; Android 4.4.4; SAMSUNG SM-T534 Build/KTU84P) AppleWebKit/534.48 (KHTML, like Gecko) Chrome/55.0.1653.292 Mobile Safari/536.3",
-"android|Mozilla/5.0 (Android; Android 7.1; SAMSUNG GT-I9700 Build/KTU84P) AppleWebKit/602.46 (KHTML, like Gecko) Chrome/51.0.2298.210 Mobile Safari/603.2",
-"android|Mozilla/5.0 (Linux; Android 4.4.4; SM-T534 Build/KOT49H) AppleWebKit/537.35 (KHTML, like Gecko) Chrome/48.0.2865.177 Mobile Safari/601.4",
-"android|Mozilla/5.0 (Android; Android 6.0.1; SAMSUNG SM-G925F Build/MMB29K) AppleWebKit/603.6 (KHTML, like Gecko) Chrome/52.0.1707.337 Mobile Safari/600.7",
-"android|Mozilla/5.0 (Linux; Android 6.0; HTC One_M9 Build/MRA58K) AppleWebKit/534.48 (KHTML, like Gecko) Chrome/51.0.1871.148 Mobile Safari/603.9",
-"android|Mozilla/5.0 (Linux; Android 6.0.1; SM-D920M Build/MDB08I) AppleWebKit/535.8 (KHTML, like Gecko) Chrome/52.0.1990.397 Mobile Safari/536.9",
-"android|Mozilla/5.0 (Linux; U; Android 4.4.1; Nexus5 V7.1 Build/KOT49H) AppleWebKit/602.45 (KHTML, like Gecko) Chrome/55.0.2720.129 Mobile Safari/534.2",
-"android|Mozilla/5.0 (Android; Android 5.0.1; HTC [M8|M9|M8 Pro Build/LRX22G) AppleWebKit/602.15 (KHTML, like Gecko) Chrome/52.0.2125.398 Mobile Safari/603.2",
-"android|Mozilla/5.0 (Linux; U; Android 5.0.1; SM-G838K Build/LRX22G) AppleWebKit/601.15 (KHTML, like Gecko) Chrome/51.0.3404.311 Mobile Safari/601.3",
-"android|Mozilla/5.0 (Linux; U; Android 5.0; SAMSUNG SM-G490 Build/LRX22C) AppleWebKit/536.29 (KHTML, like Gecko) Chrome/48.0.1322.228 Mobile Safari/533.5",
-"android|Mozilla/5.0 (Linux; Android 5.1.1; SM-G9350FQ Build/LMY47X) AppleWebKit/602.46 (KHTML, like Gecko) Chrome/55.0.1253.269 Mobile Safari/534.2",
-"android|Mozilla/5.0 (Android; Android 7.1.1; Xperia V Build/NDE63X) AppleWebKit/533.20 (KHTML, like Gecko) Chrome/47.0.1025.370 Mobile Safari/602.9",
-"android|Mozilla/5.0 (Linux; U; Android 5.1.1; SAMSUNG SM-G9358 Build/MMB29M) AppleWebKit/535.4 (KHTML, like Gecko) Chrome/47.0.3983.116 Mobile Safari/535.5",
-"android|Mozilla/5.0 (Linux; U; Android 5.1.1; Nexus 5 Build/LRX22C) AppleWebKit/600.24 (KHTML, like Gecko) Chrome/53.0.3063.165 Mobile Safari/602.0",
-"android|Mozilla/5.0 (Android; Android 6.0.1; SAMSUNG SM-G925F Build/MDB08I) AppleWebKit/536.4 (KHTML, like Gecko) Chrome/50.0.1745.361 Mobile Safari/534.9",
-"android|Mozilla/5.0 (Linux; U; Android 5.0.2; SAMSUNG-SM-N910F Build/LRX22C) AppleWebKit/601.39 (KHTML, like Gecko) Chrome/47.0.3525.232 Mobile Safari/536.8",
-"android|Mozilla/5.0 (Linux; U; Android 6.0.1; HTC OneS Build/MRA58K) AppleWebKit/600.11 (KHTML, like Gecko) Chrome/48.0.1277.258 Mobile Safari/534.7",
-"android|Mozilla/5.0 (Linux; Android 4.4.1; [HM NOTE|NOTE-III|NOTE2 1LTET) AppleWebKit/600.12 (KHTML, like Gecko) Chrome/53.0.2390.359 Mobile Safari/537.9",
-"android|Mozilla/5.0 (Linux; U; Android 5.0.2; Lenovo A7000-a Build/LRX21M;) AppleWebKit/603.49 (KHTML, like Gecko) Chrome/49.0.3944.138 Mobile Safari/533.9",
-"android|Mozilla/5.0 (Linux; Android 4.4.4; MOTOROLA MSM8960 Build/KVT49L) AppleWebKit/537.41 (KHTML, like Gecko) Chrome/52.0.3875.248 Mobile Safari/533.5",
-"android|Mozilla/5.0 (Android; Android 4.4.1; SM-E500F Build/KTU84P) AppleWebKit/535.49 (KHTML, like Gecko) Chrome/51.0.3420.118 Mobile Safari/533.4",
-"android|Mozilla/5.0 (Linux; U; Android 4.3.1; Ascend G310 Build/JLS36I) AppleWebKit/536.9 (KHTML, like Gecko) Chrome/51.0.2591.258 Mobile Safari/533.1",
-"android|Mozilla/5.0 (Linux; Android 4.4; [HM NOTE|NOTE-III|NOTE2 1LTETD) AppleWebKit/601.29 (KHTML, like Gecko) Chrome/54.0.2437.145 Mobile Safari/600.5",
-"android|Mozilla/5.0 (Linux; U; Android 4.3.1; Samsung Galaxy S4 Mega GT-I8900 Build/JDQ39) AppleWebKit/603.41 (KHTML, like Gecko) Chrome/53.0.2227.349 Mobile Safari/535.9",
-"android|Mozilla/5.0 (Android; Android 7.0; Xperia V Build/NDE63X) AppleWebKit/535.50 (KHTML, like Gecko) Chrome/48.0.1213.228 Mobile Safari/534.9",
-"android|Mozilla/5.0 (Android; Android 5.1; SAMSUNG SM-G920T Build/LRX22G) AppleWebKit/600.9 (KHTML, like Gecko) Chrome/55.0.1773.347 Mobile Safari/600.8",
-"android|Mozilla/5.0 (Linux; U; Android 5.0; LG-D325 Build/LRX22G) AppleWebKit/602.12 (KHTML, like Gecko) Chrome/52.0.1615.322 Mobile Safari/603.3",
-"android|Mozilla/5.0 (Android; Android 4.4.1; XT1030 Build/[KXB20.9|KXC21.5]) AppleWebKit/602.41 (KHTML, like Gecko) Chrome/54.0.3368.257 Mobile Safari/537.0",
+User_Agent = random.choice([
+    "android|Mozilla/5.0 (Linux; Android 13; SM-G991B Build/TP1A.220624.014) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Mobile Safari/537.36",
+    "android|Mozilla/5.0 (Linux; Android 12; SM-G998U1 Build/SP1A.210812.016) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.5481.153 Mobile Safari/537.36",
+    "android|Mozilla/5.0 (Linux; Android 11; SM-N986U Build/RP1A.200720.012) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.105 Mobile Safari/537.36",
+    "android|Mozilla/5.0 (Linux; Android 10; SM-G977N Build/QP1A.190711.020) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Mobile Safari/537.36",
+    "android|Mozilla/5.0 (Linux; Android 9; SM-G973F Build/PPR1.180610.011) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.96 Mobile Safari/537.36",
+    "android|Mozilla/5.0 (Linux; Android 8.0.0; SM-G955F Build/R16NW) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.87 Mobile Safari/537.36",
+    "android|Mozilla/5.0 (Linux; Android 8.1.0; SM-A605G Build/M1AJQ) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.105 Mobile Safari/537.36",
+    "android|Mozilla/5.0 (Linux; Android 7.0; SM-A720F Build/NRD90M) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.125 Mobile Safari/537.36",
+    "android|Mozilla/5.0 (Linux; Android 6.0.1; SM-G928T Build/MMB29K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.91 Mobile Safari/537.36",
+    "android|Mozilla/5.0 (Linux; Android 5.1.1; SM-J700H Build/LMY48B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/48.0.2564.95 Mobile Safari/537.36",
+    "android|Mozilla/5.0 (Linux; Android 4.4.4; SM-N910C Build/KTU84P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.0.0 Mobile Safari/537.36",
+    "android|Mozilla/5.0 (Linux; Android 13; SM-F936B Build/TP1A.220624.014) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.5672.77 Mobile Safari/537.36",
+    "android|Mozilla/5.0 (Linux; Android 12; SM-A528B Build/SP1A.210812.016) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.5481.153 Mobile Safari/537.36",
+    "android|Mozilla/5.0 (Linux; Android 11; SM-M526BR Build/RP1A.200720.012) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.74 Mobile Safari/537.36",
+    "android|Mozilla/5.0 (Linux; Android 10; SM-A715F Build/QP1A.190711.020) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Mobile Safari/537.36",
+    "android|Mozilla/5.0 (Linux; Android 9; SM-G975F Build/PPR1.180610.011) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.89 Mobile Safari/537.36",
+    "android|Mozilla/5.0 (Linux; Android 8.1.0; SM-J810G Build/M1AJQ) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.99 Mobile Safari/537.36",
+    "android|Mozilla/5.0 (Linux; Android 8.0.0; SM-G950F Build/R16NW) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.158 Mobile Safari/537.36",
+    "android|Mozilla/5.0 (Linux; Android 7.1.1; SM-G570F Build/NMF26X) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.98 Mobile Safari/537.36",
+    "android|Mozilla/5.0 (Linux; Android 7.0; SM-J730F Build/NRD90M) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.107 Mobile Safari/537.36",
+    "android|Mozilla/5.0 (Linux; Android 6.0.1; SM-G900P Build/MMB29M) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.85 Mobile Safari/537.36",
+    "android|Mozilla/5.0 (Linux; Android 5.0.2; SM-A500F Build/LRX22G) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.93 Mobile Safari/537.36",
+    "android|Mozilla/5.0 (Linux; Android 4.4.2; SM-T231 Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/34.0.1847.114 Safari/537.36",
+    "android|Mozilla/5.0 (Linux; Android 13; SM-S908U1 Build/TP1A.220624.014) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.5615.138 Mobile Safari/537.36",
+    "android|Mozilla/5.0 (Linux; Android 12; SM-A135F Build/SP1A.210812.016) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.5414.117 Mobile Safari/537.36",
+    "android|Mozilla/5.0 (Linux; Android 11; SM-M315F Build/RP1A.200720.012) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.120 Mobile Safari/537.36",
+    "android|Mozilla/5.0 (Linux; Android 10; SM-G780G Build/QP1A.190711.020) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.110 Mobile Safari/537.36",
+    "android|Mozilla/5.0 (Linux; Android 9; SM-J415G Build/PPR1.180610.011) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.101 Mobile Safari/537.36",
+    "android|Mozilla/5.0 (Linux; Android 8.1.0; SM-A530F Build/M1AJQ) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.80 Mobile Safari/537.36",
+    "android|Mozilla/5.0 (Linux; Android 8.0.0; SM-A520F Build/R16NW) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.109 Mobile Safari/537.36",
+    "android|Mozilla/5.0 (Linux; Android 7.1.2; SM-T813 Build/N2G48B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.84 Safari/537.36",
+    "android|Mozilla/5.0 (Linux; Android 7.0; SM-C710F Build/NRD90M) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.83 Mobile Safari/537.36",
+    "android|Mozilla/5.0 (Linux; Android 6.0.1; SM-T580 Build/MMB29M) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.146 Safari/537.36",
+    "android|Mozilla/5.0 (Linux; Android 5.1.1; SM-G928F Build/LMY47X) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.83 Mobile Safari/537.36",
+    "android|Mozilla/5.0 (Linux; Android 5.0.1; SM-G900F Build/LRX21T) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.111 Mobile Safari/537.36",
+    "android|Mozilla/5.0 (Linux; Android 4.4.2; SM-G7102 Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.103 Mobile Safari/537.36",
+    "android|Mozilla/5.0 (Linux; Android 13; SM-F721B Build/TP1A.220624.014) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.5735.61 Mobile Safari/537.36",
+    "android|Mozilla/5.0 (Linux; Android 12; SM-A536B Build/SP1A.210812.016) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.5563.58 Mobile Safari/537.36",
+    "android|Mozilla/5.0 (Linux; Android 11; SM-M127F Build/RP1A.200720.012) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.210 Mobile Safari/537.36",
+    "android|Mozilla/5.0 (Linux; Android 10; SM-A217F Build/QP1A.190711.020) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.127 Mobile Safari/537.36",
+    "android|Mozilla/5.0 (Linux; Android 9; SM-A505F Build/PPR1.180610.011) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.90 Mobile Safari/537.36",
+    "android|Mozilla/5.0 (Linux; Android 8.1.0; SM-J610G Build/M1AJQ) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Mobile Safari/537.36",
+    "android|Mozilla/5.0 (Linux; Android 8.0.0; SM-A720F Build/R16NW) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.137 Mobile Safari/537.36",
+    "android|Mozilla/5.0 (Linux; Android 7.0; SM-J701F Build/NRD90M) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.132 Mobile Safari/537.36",
+    "android|Mozilla/5.0 (Linux; Android 6.0.1; SM-G530F Build/MMB29M) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.98 Mobile Safari/537.36",
+    "android|Mozilla/5.0 (Linux; Android 5.1.1; SM-J500H Build/LMY48B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.94 Mobile Safari/537.36",
+    "android|Mozilla/5.0 (Linux; Android 4.4.2; SM-T331 Build/KOT49H) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.59 Safari/537.36"
 ])
 def kt_driver(profile_path):
     options = uc.ChromeOptions()
     options.add_argument(f"--user-data-dir={os.path.abspath(profile_path)}")
     #mobile_ua = "Mozilla/5.0 (Linux; Android 9; SM-G960F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Mobile Safari/537.36"
     options.add_argument(f"--user-agent={User_Agent}")
+    options.add_argument("--force-device-scale-factor=1")
     options.add_argument("--disable-popup-blocking")
     driver = uc.Chrome(options=options , use_subprocess=True)
     return driver
@@ -273,25 +277,23 @@ def lam_job_facebook_like(driver, index=0):
     try:
         driver.get("https://app.golike.net/jobs/facebook?load_job=false")
         driver.execute_script("document.body.style.zoom = '0.50';")
-        delay_laplai(5)
+        delay_laplai(2)
         # Kiểm tra xu
         kt = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[1]/div[2]/div/div[1]/div[2]/span/div[1]/div/div/div/div/div[1]/h6/span/span')
-        delay(2)
         text = kt.text.strip()
-        delay(1)
         xu = int(text) if text.isdigit() else 35
         delay(3)
         kt.click()
         delay(2)
         # chuyển snag 
         laylink = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[1]/div[2]/div[2]/div[1]/div/div/a[1]/div[3]/i')
-        delay(2)
+        delay(1)
         laylink.click()
         WebDriverWait(driver, 60).until(EC.number_of_windows_to_be(2))
         handles = driver.window_handles
         if len(handles) > 1:  
             driver.switch_to.window(handles[1])
-        delay(20)
+        delay(15)
         # main
         
         driver.execute_script("window.scrollBy(0, 500);")
@@ -305,6 +307,7 @@ def lam_job_facebook_like(driver, index=0):
         try:
             
             try:
+                
                 # like
                 modal = driver.find_element(By.XPATH, '//div[@role="dialog"]//div[@aria-label="Đóng"]').find_element(By.XPATH, "./ancestor::div[@role='dialog']")
                 like = WebDriverWait(modal, 5).until(EC.presence_of_element_located((By.XPATH, './/div[@aria-label="Thích"]')))
@@ -312,11 +315,10 @@ def lam_job_facebook_like(driver, index=0):
                 like = driver.find_element(By.XPATH, '//div[@aria-label="Thích"]')
             try:
                 found = True
-                delay(3)
                 ActionChains(driver).move_to_element(like).perform()
-                delay(3)
+                delay(2)
                 ActionChains(driver).move_to_element(like).click().perform()
-                delay(3)
+                delay(1)
             except:
                 time.sleep(0.1)
             
@@ -330,17 +332,30 @@ def lam_job_facebook_like(driver, index=0):
                 # hoàn thành job golike
                 
                 driver.find_element(By.XPATH, '/html/body/div[1]/div/div[1]/div[2]/div[2]/div[2]/div').click()
-                delay(2)
+                delay(1)
                 WebDriverWait(driver, 30).until(
                     EC.element_to_be_clickable((By.CSS_SELECTOR, 'button.swal2-confirm.swal2-styled'))
                 ).click()
         # Xu li lai job loi + in ra
-                delay_anti(1)
-                biendem += 1
-                tongxu += xu
-                print(f" [Luồng {index}] {CYAN}| {biendem} |  FACEBOOK  | {RED} Ẩn ID {RESET} |{GREEN} Hoàn Thành {RESET}| {YELLOW}+{xu}{RESET} | {MAGENTA}Tổng xu: {tongxu}{RESET} | {BLUE}Time: {datetime.now().strftime('%H:%M:%S')}{RESET} | ")
-                
-                #print(f"{CYAN}{NGHIENG}[ FACEBOOK ] {RESET} | {RED} Ẩn ID {RESET} |{GREEN} Hoàn Thành {RESET}| {BLUE}Time: {datetime.now().strftime('%H:%M:%S')}{RESET} | ")
+                delay_anti(5)
+
+                if driver.current_url.startswith ("https://app.golike.net/jobs/facebook?load_job=false"):
+                    biendem += 1
+                    tongxu += xu
+                    print(f" [Luồng {index}] {CYAN}| {biendem} |  FACEBOOK  | {RED} Ẩn ID {RESET} |{GREEN} Hoàn Thành {RESET}| {YELLOW}+{xu}{RESET} | {MAGENTA}Tổng xu: {tongxu}{RESET} | {BLUE}Time: {datetime.now().strftime('%H:%M:%S')}{RESET} | ")
+                else:
+                    handles = driver.window_handles
+                    driver.switch_to.window(handles[0])
+                    delay_die(2)
+                    element = driver.find_element(By.XPATH, '/html/body/div[1]/div/div[1]/div[2]/div[3]/div[1]')
+                    delay_die(1)
+                    driver.execute_script("arguments[0].scrollIntoView(true);", element)
+                    delay_die(1)
+                    element.click()
+                    driver.find_element(By.XPATH, '/html/body/div[1]/div/div[1]/div[2]/div[3]/div[2]/div/button').click()
+                    WebDriverWait(driver, 30).until(
+                        EC.element_to_be_clickable((By.CSS_SELECTOR, 'button.swal2-confirm.swal2-styled'))
+                    ).click()
         except:
             delay_die(1)
             WebDriverWait(driver, 10).until(EC.number_of_windows_to_be(2))
@@ -387,10 +402,10 @@ def lam_job(profile_path, index=0):
         delay_laplai(1)
         lam_job_facebook_like(driver, index)
 # Hàm chạy đa luồng với delay giữa các luồng
-def chay_da_luong(profile_paths, delay=5):
+def chay_da_luong(profile_paths, delay=3):
     threads = []
     for index, profile_path in enumerate(profile_paths):
-        time.sleep(delay * index)
+        time.sleep(delay )
         t = threading.Thread(target=lam_job, args=(profile_path, index))
         t.daemon = True 
         print(f"Đang mở: {profile_path} [Luồng {index}] ")
@@ -441,6 +456,9 @@ def ui():
 # Thực thi chương trình với 3 profile
 if __name__ == "__main__":
     ui()
+
+
+
 
 
 
