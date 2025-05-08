@@ -11,30 +11,9 @@ libraries = [
     "random_user_agent",
     "dnspython",
     "pystyle",
+    "console",
     "rich"
 ]
-import sys, os, time, subprocess, importlib
-
-# Danh sách thư viện cần dùng
-required_packages = {
-    "selenium": "selenium",
-    "undetected_chromedriver": "undetected-chromedriver",
-    "colorama": "colorama",
-    "rich": "rich"
-}
-
-def install_if_missing(module_name, pip_name):
-    try:
-        importlib.import_module(module_name)
-        print(f"✅ Đã cài: {module_name}")
-    except ImportError:
-        print(f"📦 Chưa có {module_name} → đang cài...")
-        subprocess.check_call([sys.executable, "-m", "pip", "install", "-U", pip_name])
-
-for module, pip_name in required_packages.items():
-    install_if_missing(module, pip_name)
-time.sleep(2)
-os.system("cls")
 
 # Hàm kiểm tra và cài đặt thư viện
 def install_libraries():
@@ -112,7 +91,7 @@ console.print(text, end="")
 console.print("[bold yellow] ]═══════════════════╩═══════════╗")
 console.print("[bold magenta]    ╙║ [/bold magenta]                                                                        [bold yellow]║╜")
 # Nhập dữ liệu
-console.print("[bold magenta]    ╙║ [bold magenta][1] Golike FB <antiband + đa luồng>  [/bold magenta][bold yellow]| PC[/bold yellow]                               [bold yellow]║╜")
+console.print("[bold magenta]    ╙║ [bold magenta][1] TTC FB <antiband + đa luồng>     [/bold magenta][bold yellow]| PC[/bold yellow]                               [bold yellow]║╜")
 console.print("[bold magenta]    ╙║ [bold red][2] E[bold magenta]x[/bold magenta]i[bold magenta]t[/ bold magenta]                             [/bold magenta][bold yellow]    [/bold yellow]                               [bold yellow]║╜")
 #console.print("[bold magenta]    ╙║ [/bold magenta]                                                                        [bold yellow]║╜")
 console.print("[bold magenta]     ╚═══════════════════════════════════════[/bold magenta][bold yellow]══════════════════════════════════╝")
@@ -266,7 +245,7 @@ while True:
     input_choice = console.input(" [bold red][[bold yellow]𝓑𝓞𝓢𝓢[/bold yellow] [bold white]|[/bold white][bold magenta]Nhập số[/bold magenta]][/bold red][bold green]#   ")
     if input_choice == "1":
         
-        url = "https://raw.githubusercontent.com/nguyenit2609/BOSS-DEC/refs/heads/main/FB_%C4%90A_LU%E1%BB%92NG_LIKE"
+        url = "https://raw.githubusercontent.com/nguyenit2609/BOSS-DEC/refs/heads/main/TTC-FB"
         try:
             # Gửi yêu cầu GET đến URL
             response = requests.get(url)
