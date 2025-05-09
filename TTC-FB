@@ -20,11 +20,21 @@ from selenium.webdriver.common.action_chains import ActionChains
 from colorama import Fore, Style
 from rich.console import Console
 from selenium.webdriver.chrome.options import Options
+import logging
+
 
 
 os.system("")
 console = Console()
 frames = ['|', '/', '-', '\\']  
+camxuc = {
+        "THƯƠNG THƯƠNG": "Thương thương",
+        "LOVE": "Yêu thích",
+        "HAHA": "Haha",
+        "WOW": "Wow",
+        "BUỒN": "Buồn",
+        "TỨC GIẬN": "Phẫn nộ"
+    }
 
 # Hàm delay chung với tham số cho hành động và thời gian
 def delay_action(second, action_text, is_error=False):
@@ -64,7 +74,7 @@ def tao_profile_moi():
         index += 1
 
     print(f"{CYAN}➡️ Đang tạo profile chrome_profile_{index}, vui lòng đăng nhập GoLike{RESET}")
-    driver = create_driver(new_profile_path)
+    driver = kt_driver(new_profile_path)
     driver.set_window_size(500, 700)
     delay_kt(2)
     driver.get("https://tuongtaccheo.com/home.php")
@@ -150,7 +160,7 @@ def kiem_tra_profile(profiles):
             profile_path = profiles[lua_chon - 1]
             print(f"{CYAN}➡️ Đang kiểm tra tài khoản: {profile_path}{RESET}", end="\r")
             
-            driver = create_driver(profile_path)
+            driver = kt_driver(profile_path)
             driver.set_window_size(500,700)
             # Kiểm tra GoLike
             driver.get("https://tuongtaccheo.com/home.php")
@@ -220,18 +230,22 @@ def lam_job_like_vip(driver,index):
     global tongxu, biendem
     try:
         driver.get("https://tuongtaccheo.com/kiemtien/likepostvipcheo/")
-
+        driver.execute_script("document.body.style.zoom = '0.25';")
+        driver.execute_script("document.body.style.zoom = '0.25';")
         delay_laplai(5)
         try:
             #tai = driver.find_element(By.ID, 'tailai')
             driver.find_element(By.XPATH ,'/html/body/div/div/div[2]/div/div[1]/div/div[1]/div/div').click()
         except:
             try:
-                driver.find_element(By.XPATH, '/html/body/div/div/div[2]/div/div[1]/div/div[2]/div/div/button').click()
+                driver.find_element(By.XPATH, '/html/body/div/div/div[2]/div/div[1]/div/div[1]/div/div/button').click()
             except:
-                print("Đang bị coundown", end="\r")
+                try:
+                    driver.find_element(By.XPATH, '/html/body/div/div/div[2]/div/div[1]/div/div[2]/div/div/button').click()
+                except:
+                    print("Đang bị coundown", end="\r")
 
-        delay(20)
+        delay(15)
         all_tab = driver.window_handles
         driver.switch_to.window(all_tab[1])
         driver.execute_script("window.scrollBy(0, 500);")
@@ -291,7 +305,8 @@ def lam_job_like_vip(driver,index):
                 if sodumoi > soducu :
                     biendem +=1
                     tongxu +=1100
-                    print(f" [Luồng {index}] {CYAN}| {biendem} |  FACEBOOK  | {RED} Hoàn Thành {RESET} |{GREEN} 1100{RESET}| {YELLOW}Tổng: {tongxu}{RESET} | {MAGENTA}Xu: {sodumoi}{RESET} | {BLUE}Time: {datetime.now().strftime('%H:%M:%S')}{RESET} | ")
+                    
+                    print(f" [Luồng {index}] {CYAN}| {biendem} |  FACEBOOK  | {RED} Live Vip   {RESET} |{GREEN} 1100 {RESET}| {YELLOW}Tổng: {tongxu}{RESET} | {MAGENTA}Xu: {sodumoi}{RESET} | {BLUE}Time: {datetime.now().strftime('%H:%M:%S')}{RESET} | ")
                 else:
                     print("Job lỗi", end ="\r")
             else:
@@ -301,12 +316,253 @@ def lam_job_like_vip(driver,index):
                 driver.switch_to.window(handles[0])
                 print(f" [Luồng {index}] {CYAN}| {biendem} |  FACEBOOK  | {RED} Ẩn ID {RESET} |{GREEN} Job lỗi {RESET}| {YELLOW}+0{RESET} | {MAGENTA}Tổng xu: {tongxu}{RESET} | {BLUE}Time: {datetime.now().strftime('%H:%M:%S')}{RESET} | ", end = "\r")
         except:
+            handles = driver.window_handles
+            try:
+                driver.switch_to.window(handles[1])
+                driver.close()
+            except:
+                time.sleep(0.2)
+            driver.switch_to.window(handles[0])
             time.sleep(0.2)
     except Exception as e:
+        handles = driver.window_handles
+        try:
+            driver.switch_to.window(handles[1])
+            driver.close()
+        except:
+            time.sleep(0.2)
+        driver.switch_to.window(handles[0])
+def lam_job_like_thuong(driver,index):
+    global tongxu, biendem
+    try:
+        driver.get("https://tuongtaccheo.com/kiemtien/likepostvipre/")
+        driver.execute_script("document.body.style.zoom = '0.25';")
+        driver.execute_script("document.body.style.zoom = '0.25';")
+        delay_laplai(5)
+        try:
+            #tai = driver.find_element(By.ID, 'tailai')
+            driver.find_element(By.XPATH ,'/html/body/div/div/div[2]/div/div[1]/div/div[1]/div/div').click()
+        except:
+            try:
+                driver.find_element(By.XPATH, '/html/body/div/div/div[2]/div/div[1]/div/div[1]/div/div/button').click()
+            except:
+                try:
+                    driver.find_element(By.XPATH, '/html/body/div/div/div[2]/div/div[1]/div/div[2]/div/div/button').click()
+                except:
+                    print("Đang bị coundown", end="\r")
+
+        delay(15)
+        all_tab = driver.window_handles
+        driver.switch_to.window(all_tab[1])
+        driver.execute_script("window.scrollBy(0, 500);")
+        driver.execute_script("window.scrollBy(0, -500);")
+        driver.execute_script("window.scrollBy(0, 500);")
+        driver.execute_script("window.scrollBy(0, -500);")
+        driver.execute_script("window.scrollBy(0, 500);")  
+        driver.execute_script("window.scrollBy(0, -500);")
+        found = False 
+        try:
+            try:
+                # like
+                modal = driver.find_element(By.XPATH, '//div[@role="dialog"]//div[@aria-label="Đóng"]').find_element(By.XPATH, "./ancestor::div[@role='dialog']")
+                like = WebDriverWait(modal, 5).until(EC.presence_of_element_located((By.XPATH, './/div[@aria-label="Thích"]')))
+            except:
+                like = driver.find_element(By.XPATH, '//div[@aria-label="Thích"]')
+            try:
+                found = True
+                ActionChains(driver).move_to_element(like).perform()
+                delay(1)
+                ActionChains(driver).move_to_element(like).click().perform()
+                delay(1)
+            except:
+                time.sleep(0.1)
+            if found:
+                handles = driver.window_handles
+                driver.switch_to.window(handles[0])
+                sodu_xpath = "/html/body/div[1]/div/nav/div/div[2]/ul[2]/li[2]/a/strong"
+                # Kiểm tra số xu
+                oldsodu = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, sodu_xpath)))
+                soducu = int(oldsodu.text.replace(",", ""))
+                driver.find_element(By.XPATH, '/html/body/div/div/div[2]/div/div[1]/div/div[1]/div/div/button').click()
+                delay(10)
+                sodumoi = int(oldsodu.text.replace(",", ""))
+                handles = driver.window_handles
+                driver.switch_to.window(handles[1])
+                text_to_find = 'Giờ bạn chưa dùng được tính năng này'
+                try:
+                    WebDriverWait(driver, 1).until(EC.presence_of_element_located((By.XPATH, f"//*[contains(text(), '{text_to_find}')]")))
+                    return False
+                except Exception as e:
+                    time.sleep(0.5)
+                try:
+                    ActionChains(driver).move_to_element(like).click().perform()
+                except:
+                    
+                    try:
+                        modal = driver.find_element(By.XPATH, '//div[@role="dialog"]//div[@aria-label="Đóng"]').find_element(By.XPATH, "./ancestor::div[@role='dialog']")
+                        like = WebDriverWait(modal, 5).until(EC.presence_of_element_located((By.XPATH, './/div[@aria-label="Thích"]')))
+                    except:
+                        like = driver.find_element(By.XPATH, '//div[@aria-label="Thích"]')
+                    ActionChains(driver).move_to_element(like).click().perform()
+                handles = driver.window_handles
+                driver.switch_to.window(handles[1])
+                driver.close()
+                driver.switch_to.window(handles[0])
+                if sodumoi > soducu :
+                    biendem +=1
+                    tongxu += 600
+                    print(f" [Luồng {index}] {CYAN}| {biendem} |  FACEBOOK  | {RED} Like Rẻ    {RESET} |{GREEN} 600  {RESET}| {YELLOW}Tổng: {tongxu}{RESET} | {MAGENTA}Xu: {sodumoi}{RESET} | {BLUE}Time: {datetime.now().strftime('%H:%M:%S')}{RESET} | ")
+                else:
+                    print("Job lỗi", end ="\r")
+            else:
+                handles = driver.window_handles
+                driver.switch_to.window(handles[1])
+                driver.close()
+                driver.switch_to.window(handles[0])
+                print(f" [Luồng {index}] {CYAN}| {biendem} |  FACEBOOK  | {RED} Ẩn ID {RESET} |{GREEN} Job lỗi {RESET}| {YELLOW}+0{RESET} | {MAGENTA}Tổng xu: {tongxu}{RESET} | {BLUE}Time: {datetime.now().strftime('%H:%M:%S')}{RESET} | ", end = "\r")
+        except:
+            handles = driver.window_handles
+            try:
+                driver.switch_to.window(handles[1])
+                driver.close()
+            except:
+                time.sleep(0.2)
+            driver.switch_to.window(handles[0])
+            time.sleep(0.2)
+    except Exception as e:
+        handles = driver.window_handles
+        try:
+            driver.switch_to.window(handles[1])
+            driver.close()
+        except:
+            time.sleep(0.2)
+        driver.switch_to.window(handles[0])
+def lam_job_camxuc_vip(driver,index):
+    global tongxu, biendem
+    try:
+        driver.get("https://tuongtaccheo.com/kiemtien/likepostvipre/")
+        driver.execute_script("document.body.style.zoom = '0.25';")
+        driver.execute_script("document.body.style.zoom = '0.25';")
+        delay_laplai(5)
+        try:
+            #tai = driver.find_element(By.ID, 'tailai')
+            driver.find_element(By.XPATH ,'/html/body/div/div/div[2]/div/div[1]/div/div[1]/div/div').click()
+        except:
+            try:
+                kt = driver.find_element(By.XPATH, '/html/body/div/div/div[2]/div/div[1]/div/div[1]/div/div/button')
+                kt_job = kt.text
+                kt.click()
+            except:
+                try:
+                    th = driver.find_element(By.XPATH, '/html/body/div/div/div[2]/div/div[1]/div/div[2]/div/div/button')
+                    kt_job = th.text
+                    th.click()
+                except:
+                    print("Đang bị coundown", end="\r")
+        if kt_job:
+
+            delay(15)
+            all_tab = driver.window_handles
+            driver.switch_to.window(all_tab[1])
+            driver.execute_script("window.scrollBy(0, 500);")
+            driver.execute_script("window.scrollBy(0, -500);")
+            driver.execute_script("window.scrollBy(0, 500);")
+            driver.execute_script("window.scrollBy(0, -500);")
+            driver.execute_script("window.scrollBy(0, 500);")  
+            driver.execute_script("window.scrollBy(0, -500);")
+            found = False 
+            try:
+                try:
+                    # like
+                    for key, value in camxuc.items():
+                        if kt_job.strip().upper() == key:
+                            modal = driver.find_element(By.XPATH, '//div[@role="dialog"]//div[@aria-label="Đóng"]').find_element(By.XPATH, "./ancestor::div[@role='dialog']")
+                            camxuc_element  = WebDriverWait(modal, 5).until(EC.presence_of_element_located((By.XPATH, f'.//div[@aria-label="{value}"]')))
+                except:
+                    camxuc_element = driver.find_element(By.XPATH, '//div[@aria-label="Thích"]')
+                try:
+                    found = True
+                    ActionChains(driver).move_to_element(camxuc_element).perform()
+                    delay(1)
+                    ActionChains(driver).move_to_element(camxuc_element).click().perform()
+                    delay(1)
+                except:
+                    time.sleep(0.1)
+                if found:
+                    handles = driver.window_handles
+                    driver.switch_to.window(handles[0])
+                    sodu_xpath = "/html/body/div[1]/div/nav/div/div[2]/ul[2]/li[2]/a/strong"
+                    # Kiểm tra số xu
+                    oldsodu = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, sodu_xpath)))
+                    soducu = int(oldsodu.text.replace(",", ""))
+                    driver.find_element(By.XPATH, '/html/body/div/div/div[2]/div/div[1]/div/div[1]/div/div/button').click()
+                    delay(10)
+                    sodumoi = int(oldsodu.text.replace(",", ""))
+                    handles = driver.window_handles
+                    driver.switch_to.window(handles[1])
+                    text_to_find = 'Giờ bạn chưa dùng được tính năng này'
+                    try:
+                        WebDriverWait(driver, 1).until(EC.presence_of_element_located((By.XPATH, f"//*[contains(text(), '{text_to_find}')]")))
+                        return False
+                    except Exception as e:
+                        time.sleep(0.5)
+                    try:
+                        ActionChains(driver).move_to_element(like).click().perform()
+                    except:
+                        try:
+                            modal = driver.find_element(By.XPATH, '//div[@role="dialog"]//div[@aria-label="Đóng"]').find_element(By.XPATH, "./ancestor::div[@role='dialog']")
+                            like = WebDriverWait(modal, 5).until(EC.presence_of_element_located((By.XPATH, './/div[@aria-label="Thích"]')))
+                        except:
+                            like = driver.find_element(By.XPATH, '//div[@aria-label="Thích"]')
+                        ActionChains(driver).move_to_element(like).click().perform()
+                    handles = driver.window_handles
+                    driver.switch_to.window(handles[1])
+                    driver.close()
+                    driver.switch_to.window(handles[0])
+                    if sodumoi > soducu :
+                        biendem +=1
+                        tongxu += 1100
+                        print(f" [Luồng {index}] {CYAN}| {biendem} |  FACEBOOK  | {RED} Cảm Xúc Vip{RESET} |{GREEN} 1100 {RESET}| {YELLOW}Tổng: {tongxu}{RESET} | {MAGENTA}Xu: {sodumoi}{RESET} | {BLUE}Time: {datetime.now().strftime('%H:%M:%S')}{RESET} | ")
+                    else:
+                        print("Job lỗi", end ="\r")
+                else:
+                    handles = driver.window_handles
+                    driver.switch_to.window(handles[1])
+                    driver.close()
+                    driver.switch_to.window(handles[0])
+                    print(f" [Luồng {index}] {CYAN}| {biendem} |  FACEBOOK  | {RED} Ẩn ID {RESET} |{GREEN} Job lỗi {RESET}| {YELLOW}+0{RESET} | {MAGENTA}Tổng xu: {tongxu}{RESET} | {BLUE}Time: {datetime.now().strftime('%H:%M:%S')}{RESET} | ", end = "\r")
+            except:
+                handles = driver.window_handles
+                try:
+                    driver.switch_to.window(handles[1])
+                    driver.close()
+                except:
+                    time.sleep(0.2)
+                driver.switch_to.window(handles[0])
+                time.sleep(0.2)
+        else:
+            handles = driver.window_handles
+            try:
+                driver.switch_to.window(handles[1])
+                driver.close()
+            except:
+                time.sleep(0.2)
+            driver.switch_to.window(handles[0])
+            time.sleep(0.2)
+    except Exception as e:
+        handles = driver.window_handles
+        try:
+            driver.switch_to.window(handles[1])
+            driver.close()
+        except:
+            time.sleep(0.2)
+        driver.switch_to.window(handles[0])
         print(e)
 # Hàm tạo driver với profile
-def create_driver(profile_path, headless=False):
+def kt_driver(profile_path, headless=False):
     os.environ["PYTHONWARNINGS"] = "ignore"  # tắt cảnh báo python
+    logging.basicConfig(level=logging.WARNING)
+    os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
     options = webdriver.ChromeOptions()
     options.add_argument(f"--user-data-dir={os.path.abspath(profile_path)}")
     options.add_argument("--disable-blink-features=AutomationControlled")
@@ -325,7 +581,56 @@ def create_driver(profile_path, headless=False):
     options.add_argument("--disable-features=VoiceTranscriptionCapability")
     options.add_experimental_option("excludeSwitches", ["enable-automation"])
     options.add_experimental_option('useAutomationExtension', False)
-    options.add_argument("--start-maximized")
+    #options.add_argument("--start-maximized")
+    options.add_experimental_option("excludeSwitches", ["enable-automation"])
+    options.add_experimental_option('useAutomationExtension', False)
+    options.add_argument("--disable-blink-features=AutomationControlled")
+    prefs = {
+    "profile.default_content_setting_values": {
+        "images": 1,      # Load ảnh bình thường
+        "javascript": 1,  # Chạy JavaScript đầy đủ
+        "cookies": 1,      # Không chặn cookie
+        "popups": 1,       # Không chặn popup
+        "plugins": 1       # Load tất cả plugin
+    }
+} 
+    options.add_experimental_option("prefs", prefs)
+    options.add_argument("--memory-pressure-off")
+    options.add_argument("--blink-settings=imagesEnabled=false")
+    options.add_argument("--disable-features=MediaEngagementBypassAutoplayPolicies")
+    options.add_argument("--autoplay-policy=no-user-gesture-required")
+    options.add_argument("--disable-background-video-track")
+    options.add_argument("--disable-background-media-suspend")
+    options.add_argument("--disable-webrtc-hw-decoding")
+    options.add_argument("--disable-webrtc-hw-encoding")
+
+
+    if headless:
+        options.headless = True
+        options.add_argument("--headless=new")
+def create_driver(profile_path, headless=False):
+    os.environ["PYTHONWARNINGS"] = "ignore"  # tắt cảnh báo python
+    logging.basicConfig(level=logging.WARNING)
+    os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+    options = webdriver.ChromeOptions()
+    options.add_argument(f"--user-data-dir={os.path.abspath(profile_path)}")
+    options.add_argument("--disable-blink-features=AutomationControlled")
+    options.add_argument("--force-device-scale-factor=0.1")
+    options.add_argument("--no-first-run --no-service-autorun --password-store=basic")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
+    options.add_argument("--disable-blink-features=AutomationControlled")
+    #mobile_ua = "Mozilla/5.0 (Linux; Android 9; SM-G960F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Mobile Safari/537.36"
+    #options.add_argument(f"--user-agent={mobile_ua}")
+    options.add_argument("--disable-logging")
+    options.add_argument("--log-level=3")  # 0=INFO, 1=WARNING, 2=LOG_ERROR, 3=LOG_FATAL
+    options.add_argument("--disable-gpu")
+    options.add_argument("--disable-software-rasterizer")
+    options.add_argument("--enable-unsafe-webgpu") 
+    options.add_argument("--disable-features=VoiceTranscriptionCapability")
+    options.add_experimental_option("excludeSwitches", ["enable-automation"])
+    options.add_experimental_option('useAutomationExtension', False)
+    #options.add_argument("--start-maximized")
     options.add_experimental_option("excludeSwitches", ["enable-automation"])
     options.add_experimental_option('useAutomationExtension', False)
     options.add_argument("--disable-blink-features=AutomationControlled")
@@ -357,9 +662,9 @@ def create_driver(profile_path, headless=False):
     return driver
 # Hàm làm nhiệm vụ Facebook Like cho mỗi profile
 def lam_job(profile_path, username, password, index=0):
-    driver = create_driver(profile_path, headless=True)
-    #driver.set_window_size(500, 700)
-    #driver.set_window_position(x=550 * index, y=0 )
+    driver = create_driver(profile_path, headless=False)
+    driver.set_window_size(800, 500)
+    driver.set_window_position(x=1500 * index, y=0 )
     os.system('cls' if os.name == 'nt' else 'clear')
     try:
         login_ttc(driver, username, password)
@@ -367,7 +672,9 @@ def lam_job(profile_path, username, password, index=0):
         time.sleep(0.2)
     while True:
         delay_laplai(1)
+        #lam_job_camxuc_vip(driver, index)
         lam_job_like_vip(driver, index)
+        lam_job_like_thuong(driver, index)
 # Hàm chạy đa luồng với delay giữa các luồng
 def chay_da_luong(profile_paths, delay=20):
     accounts = lay_du_lieu_ttc(file_path="account_info.txt")  # Lấy danh sách tài khoản
@@ -416,7 +723,7 @@ def giaodien():
 def ui():
     while True:
         tat_chrome_hieu_ung()
-        delay_xoa(15)
+        delay_xoa(5)
         os.system('cls')
         giaodien()
         print("")
@@ -449,4 +756,8 @@ def ui():
 # Thực thi chương trình với 3 profile
 if __name__ == "__main__":
     ui()
+
+
+
+
     
